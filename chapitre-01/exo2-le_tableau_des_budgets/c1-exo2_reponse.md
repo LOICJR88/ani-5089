@@ -24,6 +24,6 @@ Ici les sources que je trouve divergent selon la technologie d'écran. Un articl
 |---|---|---|---|
 | Le Capteurs mesurent le mouvement | 1-2 ms | 1-2 ms (IMU) ; 15-33 ms (caméra) | https://vrarwiki.com/wiki/Motion-to-photon_latency |
 | Le Système transmet la mesure | 1-3 ms | 1-4 ms | https://vrarwiki.com/wiki/Motion-to-photon_latency |
-| L'Application décide et dessine | 5-11 ms | < 5-10 ms (cible typique) | https://vrarwiki.com/wiki/Motion-to-photon_latency |
+| L'Application décide et dessine | 5-11 ms | Maximum 5 à 10 ms | https://vrarwiki.com/wiki/Motion-to-photon_latency |
 | Le Compositeur assemble | 1-2 ms | pas de valeur fixe officielle trouvée, ça dépend du matériel | https://vrarwiki.com/wiki/Motion-to-photon_latency |
-| L'Écran affiche la ligne | 2-5 ms | La valeur Varie selon la technologie de l'écran (OLED quasi instantané (réponse pixel très rapide), LCD nettement plus lent) | https://www.uploadvr.com/quest-2-lcd-display-detailed-specs/ |
+| L'Écran affiche la ligne | 2-5 ms | La valeur Varie selon la technologie de l'écran (OLED quasi instantané et LCD nettement plus lent) | https://www.uploadvr.com/quest-2-lcd-display-detailed-specs/ |
