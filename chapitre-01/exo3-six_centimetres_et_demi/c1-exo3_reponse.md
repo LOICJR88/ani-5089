@@ -2,7 +2,7 @@
 
 ## En mesurant sur 6 camarades j'ai obtenu les valeurs :
 
-| Personne | Écart interpupillaire (mm) |
+| Personne | Écart entre les purpilles en mm |
 |---|---|
 | sur le 1er | 63 |
 | sur le 2ème | 63 |
