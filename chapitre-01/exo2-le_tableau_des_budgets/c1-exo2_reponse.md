@@ -6,7 +6,7 @@ vrarwiki.com situe l'échantillonnage des capteurs autour de 1 à 2 ms pour les 
 
 -Etape 02 : Le Système transmet la mesure
 
-Je ne trouve aucune source qui donne une valeur isolée et universelle pour cette étape seule, vrarwiki.com la fusionne avec le calcul de pose (6 degrés de liberté).
+Je ne trouve aucune source qui donne une valeur isolée et universelle pour cette étape seule, vrarwiki.com la fusionne avec le calcul de pose (à 6 degrés de liberté entre 1 et 4 ms).
 
 -Etape 03 : L'application décide et dessine
 
@@ -22,8 +22,8 @@ Ici les sources que je trouve divergent selon la technologie d'écran. Un articl
 
 | Étape | Valeur du cours | Valeur mesurée trouvée | Source |
 |---|---|---|---|
-| Le Capteurs mesurent le mouvement | 1-2 ms | 1-2 ms (IMU) ; 15-33 ms (caméra) | vrarwiki.com, "Motion-to-photon latency" |
-| Le Système transmet la mesure | 1-3 ms | 1-4 ms | vrarwiki.com, "Motion-to-photon latency" |
-| L'Application décide et dessine | 5-11 ms | < 5-10 ms (cible typique) | vrarwiki.com, "Motion-to-photon latency" |
-| Le Compositeur assemble | 1-2 ms | 1-2 ms (pas de valeur fixe officielle trouvée : dépend du matériel) | vrarwiki.com ; Meta Horizon Developer Docs, "Performance Head-Up Display" (métriques TimeWarp to Mid-Photon, Flip to Photon — pas de chiffre absolu) |
-| L'Écran affiche la ligne | 2-5 ms | Variable selon la dalle : OLED quasi instantané (réponse pixel très rapide), LCD nettement plus lent | UploadVR, "Meta Revealed The Detailed Specs Of Quest 2's LCD Display" |
+| Le Capteurs mesurent le mouvement | 1-2 ms | 1-2 ms (IMU) ; 15-33 ms (caméra) | https://vrarwiki.com/wiki/Motion-to-photon_latency |
+| Le Système transmet la mesure | 1-3 ms | 1-4 ms | https://vrarwiki.com/wiki/Motion-to-photon_latency |
+| L'Application décide et dessine | 5-11 ms | < 5-10 ms (cible typique) | https://vrarwiki.com/wiki/Motion-to-photon_latency |
+| Le Compositeur assemble | 1-2 ms | pas de valeur fixe officielle trouvée, ça dépend du matériel | https://vrarwiki.com/wiki/Motion-to-photon_latency |
+| L'Écran affiche la ligne | 2-5 ms | La valeur Varie selon la technologie de l'écran (OLED quasi instantané (réponse pixel très rapide), LCD nettement plus lent) | https://www.uploadvr.com/quest-2-lcd-display-detailed-specs/ |
