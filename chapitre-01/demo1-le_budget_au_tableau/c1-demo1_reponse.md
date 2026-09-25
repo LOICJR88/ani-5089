@@ -1,4 +1,4 @@
-# Démo 1 — Le budget au tableau
+# Démo 1: Le budget au tableau
 
 ## Placement initial par la classe (avant révélation)
 
