@@ -1,4 +1,4 @@
-# Démo 4: Le retard réglable (simulation)
+# Démo 4: Le retard réglable
 
 Le programme à retard réglable de l'exercice 12 est projeté à l'écran devant toute la classe. Trois volontaires viennent, chacun à leur tour, bouger la souris devant le groupe pendant que le retard est augmenté progressivement par paliers de 5 ms, en partant de 0. Chaque volontaire doit dire stop dès qu'il perçoit un décalage, sans connaître la valeur affichée à l'avance.
 
