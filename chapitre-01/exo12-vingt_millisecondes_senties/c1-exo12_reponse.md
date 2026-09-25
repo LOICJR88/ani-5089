@@ -20,4 +20,4 @@ Les cinq seuils mesurés (entre 5 et 15 ms selon les personnes, avec un décalag
 
 ## Pourquoi le seuil est bien plus bas dans un casque
 
-l'œil humain détecte déjà un retard très fin, même sur un simple curseur. Le seuil visuel de détection n'est donc pas si différent entre écran et casque. Ce qui change radicalement, ce n'est pas la sensibilité de détection, mais ce que ce retard déclenche une fois détecté : une gêne visuelle bénigne sur écran, contre un vrai conflit sensoriel potentiellement nauséeux en casque, parce que la tête y est en mouvement réel mesuré par l'oreille interne.
+Ce n'est pas le constat observé, l'œil humain détecte déjà un retard très fin, même sur un simple curseur. Le seuil visuel de détection n'est donc pas si différent entre écran et casque. Ce qui change radicalement, ce n'est pas la sensibilité de détection, mais ce que ce retard déclenche une fois détecté : une gêne visuelle bénigne sur écran, contre un vrai conflit sensoriel potentiellement nauséeux en casque, parce que la tête y est en mouvement réel mesuré par l'oreille interne.
