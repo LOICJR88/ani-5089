@@ -1,6 +1,6 @@
 # Exercice 11: L'enquête
 
-## Partie 1 — Cinq personnes interrogées directement
+## Cinq personnes interrogées directement
 
 ### Personne 1
 
