@@ -1,0 +1,6 @@
+-Ce que la trace apprend :
+Le journal identifie clairement le programme fautif : Plantage.exe. Le module fautif est l'exécutable lui-même : le plantage vient donc de mon propre code. Le code d'exception 0xc0000005 (ACCESS_VIOLATION) confirme un accès mémoire invalide, cohérent avec la déréférence d'un pointeur nul que j'ai écrite dans le code.
+L'événement 1000 (Application Error) est horodaté du 2026-10-06 à 21:51:26 UTC, ce qui correspond au moment où j'ai lancé l'exécutable. Il est suivi, cinq secondes plus tard, d'un événement 1001 (Windows Error Reporting, type APPCRASH) qui confirme le rapport de plantage et indique qu'un fichier de vidage mémoire (.mdmp) a été généré.
+
+-Ce que la trace n'apprend pas :
+Le journal ne montre pas la ligne de code source exacte ni la pile d'appels complète avec les noms de fonctions, puisque le binaire a été compilé sans symboles chargés dans l'observateur d'événements : on ne voit que des adresses mémoire brutes, pas des noms lisibles. Il ne dit rien non plus sur l'état des variables au moment du crash, ni sur la séquence d'opérations qui a mené à ce pointeur nul, seulement que l'accès a échoué, pas pourquoi la valeur était nulle à cet instant précis.

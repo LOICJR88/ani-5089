@@ -1,0 +1,128 @@
+Erreur :
++ System 
+
+  - Provider 
+
+   [ Name]  Application Error 
+ 
+  - EventID 1000 
+
+   [ Qualifiers]  0 
+ 
+   Version 0 
+ 
+   Level 2 
+ 
+   Task 100 
+ 
+   Opcode 0 
+ 
+   Keywords 0x80000000000000 
+ 
+  - TimeCreated 
+
+   [ SystemTime]  2026-10-06T21:51:26.3452495Z 
+ 
+   EventRecordID 4421 
+ 
+   Correlation 
+ 
+  - Execution 
+
+   [ ProcessID]  0 
+   [ ThreadID]  0 
+ 
+   Channel Application 
+ 
+   Computer DESKTOP-1HJ4C67 
+ 
+   Security 
+ 
+
+- EventData 
+
+   Plantage.exe 
+   0.0.0.0 
+   6ac56d4d 
+   Plantage.exe 
+   0.0.0.0 
+   6ac56d4d 
+   c0000005 
+   0000000000001026 
+   43ec 
+   01dd55dcd601a6d3 
+   C:\Users\Jr\ani-5089\chapitre-02\exo19-faire_planter_et_retrouver_pourquoi\Build\Bin\Debug-Windows\Plantage\Plantage.exe 
+   C:\Users\Jr\ani-5089\chapitre-02\exo19-faire_planter_et_retrouver_pourquoi\Build\Bin\Debug-Windows\Plantage\Plantage.exe 
+   3a9fade8-1162-4187-b2d1-b18c6c5c3c54 
+
+Information : 
++ System 
+
+  - Provider 
+
+   [ Name]  Windows Error Reporting 
+ 
+  - EventID 1001 
+
+   [ Qualifiers]  0 
+ 
+   Version 0 
+ 
+   Level 4 
+ 
+   Task 0 
+ 
+   Opcode 0 
+ 
+   Keywords 0x80000000000000 
+ 
+  - TimeCreated 
+
+   [ SystemTime]  2026-10-06T21:51:31.5314129Z 
+ 
+   EventRecordID 4422 
+ 
+   Correlation 
+ 
+  - Execution 
+
+   [ ProcessID]  0 
+   [ ThreadID]  0 
+ 
+   Channel Application 
+ 
+   Computer DESKTOP-1HJ4C67 
+ 
+   Security 
+ 
+
+- EventData 
+
+   1370041582160963086 
+   4 
+   APPCRASH 
+   Non disponible 
+   0 
+   Plantage.exe 
+   0.0.0.0 
+   6ac56d4d 
+   Plantage.exe 
+   0.0.0.0 
+   6ac56d4d 
+   c0000005 
+   0000000000001026 
+    
+    
+   \\?\C:\ProgramData\Microsoft\Windows\WER\Temp\WER2B5B.tmp.mdmp \\?\C:\ProgramData\Microsoft\Windows\WER\Temp\WER2B6C.tmp.WERInternalMetadata.xml \\?\C:\ProgramData\Microsoft\Windows\WER\Temp\WER2BBB.tmp.xml \\?\C:\ProgramData\Microsoft\Windows\WER\Temp\WER2BB9.tmp.csv \\?\C:\ProgramData\Microsoft\Windows\WER\Temp\WER2BC9.tmp.txt 
+   \\?\C:\ProgramData\Microsoft\Windows\WER\ReportArchive\AppCrash_Plantage.exe_bb1ddd58ddf985e6d034b1ffd17b25c04ee06e2c_d729d1d3_7f1f4cc3-12b3-435f-aa25-e614ba05056e 
+    
+   0 
+   3a9fade8-1162-4187-b2d1-b18c6c5c3c54 
+   268435456 
+   99e6dc306e5dae9603035d8f6837e60e 
+   0 
+
+    
+
+    
+    
