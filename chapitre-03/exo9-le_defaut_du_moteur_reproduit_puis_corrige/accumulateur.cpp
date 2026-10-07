@@ -70,7 +70,7 @@ int main() {
         if (serieApres[i].first != 0 || serieApres[i].second != 0) { k = i; break; }
     }
     if (k < 0) {
-        return 2;   // aucun mouvement detecte : aucun fichier ecrit
+        return 2;
     }
     int debut = k - 3;
     if (debut < 0) debut = 0;
