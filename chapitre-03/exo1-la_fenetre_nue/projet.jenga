@@ -1,0 +1,70 @@
+from Jenga import *
+import os
+import sys
+
+NK = "C:/Users/Jr/nkentseu"
+for chemin_py in [NK, NK + "/.jenga-typings"]:
+    if chemin_py not in sys.path:
+        sys.path.insert(0, chemin_py)
+
+useconfig(NK + "/config/modules.jenga")
+useconfig(NK + "/config/toolchain.jenga")
+useconfig(NK + "/config/graphics.jenga")
+useconfig(NK + "/config/wayland.jenga")
+
+with workspace("MaSalleWks", location="."):
+    nkentseutoolchain()
+    configurations(["Debug", "Release"])
+    
+    with unitest() as u:
+        u.Compile()
+
+    startproject("FenetreNue")
+
+    newoption(
+        trigger="windows-runtime",
+        value="RUNTIME",
+        allowed=[
+            ["desktop", "Windows desktop classique (Win32)"],
+            ["uwp",     "Windows Runtime (UWP)"],
+        ],
+        default="desktop",
+        description="Runtime Windows cible"
+    )
+    
+    for chemin in [
+        "Kernel/Foundation/NKPlatform/NKPlatform.jenga",
+        "Kernel/Foundation/NKCore/NKCore.jenga",
+        "Kernel/System/NKLogger/NKLogger.jenga",
+        "Kernel/Foundation/NKMath/NKMath.jenga",
+        "Kernel/Foundation/NKMemory/NKMemory.jenga",
+        "Kernel/Foundation/NKContainers/NKContainers.jenga",
+        "Kernel/System/NKTime/NKTime.jenga",
+        "Kernel/System/NKStream/NKStream.jenga",
+        "Kernel/System/NKThreading/NKThreading.jenga",
+        "Kernel/System/NKFileSystem/NKFileSystem.jenga",
+        "Kernel/Runtime/NKEvent/NKEvent.jenga",
+        "Kernel/Runtime/NKWindow/NKWindow.jenga",
+    ]:
+        with include(NK + "/" + chemin):
+            pass
+
+    with project("FenetreNue"):
+        windowedapp()
+        language("C++")
+        cppdialect("C++17")
+        location(".")
+        files(["main.cpp"])
+
+        nkentseudependson(
+            ["NKWindow", "NKEvent", "NKLogger", "NKMath", "NKTime", "NKStream",
+             "NKFileSystem", "NKContainers", "NKMemory", "NKCore", "NKPlatform", "NKThreading"],
+        )
+
+        objdir("%{wks.location}/Build/Obj/%{cfg.buildcfg}-%{cfg.system}/%{prj.name}")
+        targetdir("%{wks.location}/Build/Bin/%{cfg.buildcfg}-%{cfg.system}/%{prj.name}")
+
+        with filter("system:Windows"):
+            usetoolchain(TC_WINDOWS)
+            defines(["WIN32_LEAN_AND_MEAN", "_UNICODE", "UNICODE"])
+            links(["user32", "gdi32", "dwmapi", "shell32", "uuid", "ole32", "dinput8", "dxguid"])
