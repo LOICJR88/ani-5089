@@ -1,0 +1,5 @@
+Deux differences entre les deux series.
+
+1. L'arret de la souris. Dans avant.txt, quand j'arrete la souris, la valeur ne retombe pas a zero : elle reste a "-1 0" pendant six images de suite. Le moteur garde le dernier deplacement brut et ne le remet jamais a zero. Si on integrait cette valeur a chaque image, la tete continuerait de tourner alors que la main est immobile. Dans apres.txt, les memes images donnent "0 0" : l'accumulateur est vide a chaque image, donc la tete s'arrete quand la main s'arrete.
+
+2. Le mouvement rapide. Pendant un geste vif, plusieurs evenements de souris arrivent entre deux images. Dans avant.txt, la lecture directe n'en garde qu'un, le dernier, et les autres sont perdus. Sur les quatre premieres images, avant.txt totalise 20 en x (23, 8, -10, -1) alors qu'apres.txt totalise 106 (106, 57, -12, -45) pour le meme geste. L'accumulateur ajoute chaque evenement avec +=, donc aucun mouvement n'est perdu.
