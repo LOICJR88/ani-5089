@@ -1,0 +1,6 @@
+NkMouseWheel : 1123
+NkWindowResizeEvent : 774
+NkMouseMoveEvent : 548
+NkMouseEnterLeave : 19
+NkKeyPressEvent : 10
+NkWindowFocus : 8
