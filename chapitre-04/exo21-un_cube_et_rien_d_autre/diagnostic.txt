@@ -1,0 +1,12 @@
+Lignes :
+NkMeshHandle meshCube = meshes->GetCube();
+const NkVec3f centreCube = camPos + avant * 2.0f;
+dc.mesh = meshCube;
+dc.transform = NkMat4f::Translate(centreCube) * NkMat4f::Scale({echelle, echelle, echelle});
+dc.aabb = {{centreCube.x - demi, centreCube.y - demi, centreCube.z - demi},
+           {centreCube.x + demi, centreCube.y + demi, centreCube.z + demi}};
+dc.tint = {1.f, 1.f, 1.f};
+r3d->Submit(dc);
+
+Cause :
+La cause que j'ai provoquee est une echelle nulle : j'ai mis echelle a 0.f au lieu de 0.5f. La fenetre est restee entierement vide et le programme n'a affiche aucune erreur : Submit accepte l'objet sans rien dire, et un cube dont les trois dimensions sont nulles n'occupe aucun pixel. Je l'ai trouvee en changeant la valeur de echelle, qui alimente la ligne dc.transform, puis en la remettant a 0.5f : le cube est revenu. J'avais d'abord essaye de mettre en commentaire le champ aabb, mais le cube restait affiche, donc ce n'etait pas la cause dans mon programme.
