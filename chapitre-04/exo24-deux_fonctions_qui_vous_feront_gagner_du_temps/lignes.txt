@@ -1,0 +1,8 @@
+Avant :
+17
+
+Après :
+28
+
+Comptage :
+J'ai compte, dans les deux versions, les lignes qui posent les objets de la salle, sans les lignes vides ni les commentaires : avant la reecriture, 17 lignes (sol, plafond, quatre murs, porte, deux fenetres, plateau, les quatre pieds avec leur boucle, et un objet sur la table, chacun avec son y de centre ecrit a la main) ; apres, 28 lignes, qui comprennent les quatre fonctions CentreAuSol, CentreSurTable, PoserAuSol et PoserSurTable (12 lignes) et 16 lignes de placement. J'ai laisse de cote le code qui dessine (les petites fonctions soumettre, boite, auSol et surTable), identique ou quasi identique dans les deux versions, ainsi que les constantes. Le total monte de 17 a 28 parce que les definitions des fonctions sont comptees une fois ; les lignes de placement elles-memes passent de 17 a 16. Le gain n'est donc pas dans le nombre de lignes, mais dans le fait que la moitie de la hauteur n'est plus recalculee a la main pour chaque objet. Le sol, le plafond, les fenetres et le plateau ne reposent pas sur le sol : je les ai laisses avec boite.
