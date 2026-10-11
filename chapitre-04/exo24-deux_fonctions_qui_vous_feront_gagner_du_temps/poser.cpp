@@ -204,8 +204,7 @@ int nkmain(const NkEntryState &state) {
         auSol({longueurMur, hauteur, epaisseurMur}, 0.f, centreMur, couleurMur);
         auSol({epaisseurMur, hauteur, longueurMur}, -centreMur, 0.f, couleurMur);
         auSol({epaisseurMur, hauteur, longueurMur}, centreMur, 0.f, couleurMur);
-        auSol({0.90f, 2.00f, epaisseurPanneau}, -0.70f, zPorte, couleurPorte);
-        // Fenetres et plateau : suspendus, ils ne reposent pas sur le sol.
+        auSol({0.90f, 2.00f, epaisseurPanneau}, -0.70f, zPorte, couleurPorte);        
         boite({xFenetre, 1.40f, -0.90f}, {epaisseurPanneau, 1.00f, 1.20f}, couleurVitre);
         boite({xFenetre, 1.40f, 0.90f}, {epaisseurPanneau, 1.00f, 1.20f}, couleurVitre);
         boite({tableX, yPlateau, tableZ}, {longueur, epaisseur, profondeur}, couleurPlateau);
