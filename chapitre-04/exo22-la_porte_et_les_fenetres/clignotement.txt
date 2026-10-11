@@ -1,0 +1,8 @@
+Constat :
+Avec decalage = 0, la porte n'est pas un rectangle plein : elle apparait en morceaux, avec des bords en dents de scie, et les deux fenetres sont des plaques mouchetees ou le bleu et la couleur du mur alternent en petits points. Les panneaux et le mur se disputent les memes pixels, et le motif change quand la camera bouge.
+
+Nom :
+Le defaut s'appelle le z-fighting. Il vient de deux surfaces situees exactement dans le meme plan : elles ont la meme profondeur, et la carte graphique, dont le tampon de profondeur a une precision limitee, ne sait pas laquelle est devant. Elle choisit pixel par pixel, ce qui fait des bandes ou du scintillement.
+
+Réglage :
+J'ai avance les trois panneaux de 0,001 m vers l'interieur de la piece. Pas moins : a 0,00001 m le defaut est encore visible (porte en partie mouchetee, petite fenetre piquetee), alors qu'a 0,0001 m l'image est propre ; la limite est donc entre les deux, et 0,001 m garde une marge de dix fois, utile parce que la precision du tampon de profondeur baisse quand on s'eloigne. Pas plus : a 0,05 m l'image de face est aussi propre, mais en regardant le mur de gauche de profil les fenetres ressortent du mur : on voit une bande sombre epaisse sur la tranche du panneau et un filet bleu qui depasse, alors qu'a 0,001 m la tranche se reduit a un trait fin et le panneau parait plaque. 1 mm suffit donc a donner au panneau une profondeur differente de celle du mur, sans le decoller.
