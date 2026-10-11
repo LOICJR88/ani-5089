@@ -1,0 +1,8 @@
+Direction :
+Valeur essayee : (-1 ; -0,2 ; -0,2), contre (-0,4 ; -1 ; -0,3) au depart, donc un soleil presque horizontal. La salle perd presque toute sa lisibilite : sur direction.png, seul le haut du mur de gauche et le haut des fenetres recoivent de la lumiere, et tout le reste est noir. La table, le cube rouge et la porte sont a peine devinables, et on ne distingue plus ni le sol ni les pieds de la table. Le seul gain est que l'angle de la lumiere se lit nettement sur le mur de gauche, ou la limite entre clair et ombre indique d'ou vient le soleil.
+
+Intensité :
+Valeur essayee : 0,8, contre 3 au depart. La salle garde toutes ses formes mais perd en contraste et en couleur. Sur intensite.png, la table passe de l'ocre clair a un brun sombre, le cube de rouge vif a rouge fonce, et les fenetres et la porte deviennent presque de la meme teinte que le mur : on les repere moins vite. Les ombres sont toujours la (zones noires au sol et sur le mur de droite, ombre du cube sur le plateau), mais elles se detachent moins du reste, puisque tout est plus sombre.
+
+Ombres :
+Valeur essayee : castShadow a false, contre true au depart. La salle gagne en clarte uniforme : sur ombres.png, les grandes zones noires du sol et du mur de droite ont disparu, le sol sous la table est visible et on lit les quatre pieds jusqu'au sol. Elle perd les indices de profondeur : le cube n'a plus d'ombre sur le plateau, donc rien n'indique qu'il touche la table plutot que de flotter juste au-dessus, et la table n'a plus d'ombre qui la relie au sol.
