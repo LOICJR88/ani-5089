@@ -1,0 +1,241 @@
+// Exercice 27 : cent cubes et le premier mur du reel.
+#include <chrono>
+#include <fstream>
+#include <string>
+#include "NKPlatform/NkPlatformDetect.h"
+#include "NKWindow/NKMain.h"
+#include "NKWindow/Core/NkWindow.h"
+#include "NKWindow/Core/NkWindowConfig.h"
+#include "NKEvent/NkWindowEvent.h"
+#include "NKEvent/NkKeyboardEvent.h"
+#include "NKLogger/NkLog.h"
+#include "NKMath/NkFunctions.h"
+
+#include "NKRHI/Core/NkDeviceFactory.h"
+#include "NKRenderer/NkRenderer.h"
+#include "NKRenderer/Core/NkCamera.h"
+#include "NKRenderer/Mesh/NkMeshSystem.h"
+#include "NKRenderer/Tools/Render3D/NkRender3D.h"
+
+using namespace nkentseu;
+using namespace nkentseu::renderer;
+
+static void ConfigureAppData(NkAppData &d) {
+    d.appName = "Cubes27";
+}
+NK_REGISTER_ENTRY_APPDATA_UPDATER(ConfigureAppData)
+
+static void Noter(const std::string &ligne) {
+    logger.Info(ligne.c_str());
+    std::ofstream f("mesures.txt", std::ios::app);
+    f << ligne << "\n";
+}
+
+int nkmain(const NkEntryState &state) {
+    (void)state;
+
+    NkWindowConfig winCfg;
+    winCfg.title = "Cent cubes";
+    winCfg.width = 1280;
+    winCfg.height = 720;
+    winCfg.centered = true;
+    winCfg.resizable = false;
+
+    NkWindow window(winCfg);
+    if (!window.IsValid()) {
+        logger.Error("[Cubes27] Creation fenetre KO");
+        return 1;
+    }
+
+    NkDeviceInitInfo devInfo{};
+    devInfo.surface = window.GetSurfaceDesc();
+    devInfo.width = (uint32)window.GetSize().width;
+    devInfo.height = (uint32)window.GetSize().height;
+
+    NkIDevice *device = NkDeviceFactory::CreateAutoDetect(devInfo);
+    if (!device || !device->IsValid()) {
+        logger.Error("[Cubes27] Creation device KO");
+        window.Close();
+        return 2;
+    }
+
+    NkRendererConfig cfg = NkRendererConfig::ForGame(devInfo.api, devInfo.width, devInfo.height);
+    cfg.subsystems = NK_SS_RENDER3D;
+    NkRenderer *renderer = NkRenderer::Create(device, cfg);
+    if (!renderer || !renderer->Initialize()) {
+        logger.Error("[Cubes27] Init renderer KO");
+        NkRenderer::Destroy(renderer);
+        NkDeviceFactory::Destroy(device);
+        window.Close();
+        return 3;
+    }
+
+    NkRender3D *r3d = renderer->GetRender3D();
+    NkMeshHandle meshCube = renderer->GetMeshSystem()->GetCube();
+
+    int nombre = 100;        
+    bool groupes = false;    
+    bool vsync = true;       
+    bool changement = true;  
+
+    bool running = true;
+    NkEventSystem &events = NkEvents();
+    events.AddEventCallback<NkWindowCloseEvent>([&](NkWindowCloseEvent *) { running = false; });
+    events.AddEventCallback<NkKeyPressEvent>([&](NkKeyPressEvent *e) {
+        const NkKey k = e->GetKey();
+        if (k == NkKey::NK_ESCAPE) running = false;
+        else if (k == NkKey::NK_P) { nombre = nombre + nombre / 4 + 10; changement = true; }
+        else if (k == NkKey::NK_M) { nombre = nombre - nombre / 5; if (nombre < 1) nombre = 1; changement = true; }
+        else if (k == NkKey::NK_G) { groupes = !groupes; changement = true; }
+        else if (k == NkKey::NK_V) { vsync = !vsync; renderer->SetVSync(vsync); changement = true; }
+    });
+
+    const float32 demiSalle = 2.0f, epaisseurMur = 0.10f, hauteur = 2.5f;
+    const float32 centreMur = demiSalle + epaisseurMur * 0.5f;
+    const float32 longueurMur = 2.f * demiSalle + 2.f * epaisseurMur;
+    const float32 epaisseurPanneau = 0.02f, decalage = 0.001f;
+    const float32 zPorte = -demiSalle - epaisseurPanneau * 0.5f + decalage;
+    const float32 xFenetre = -demiSalle - epaisseurPanneau * 0.5f + decalage;
+    const float32 tableX = 0.60f, tableZ = 0.70f, longueur = 1.20f, profondeur = 0.80f;
+    const float32 epaisseur = 0.05f, section = 0.06f, dessus = 0.75f;
+    const float32 yPlateau = dessus - epaisseur * 0.5f;
+    const float32 hauteurPied = dessus - epaisseur;
+    const float32 decalX = longueur * 0.5f - section * 0.5f;
+    const float32 decalZ = profondeur * 0.5f - section * 0.5f;
+    const float32 signes[2] = {-1.f, 1.f};
+    const NkVec3f camPos = {1.4f, 1.60f, 1.8f};
+    const NkVec3f camTarget = {-0.6f, 1.0f, -0.8f};
+
+    const float32 cote = 0.12f;      
+    const float32 pas = 0.18f;       
+    const int parLigne = 20;
+    const int parEtage = parLigne * parLigne;
+    auto positionCube = [&](int i) -> NkVec3f {
+        const int etage = i / parEtage;
+        const int r = i % parEtage;
+        return {-1.8f + (r % parLigne) * pas, cote * 0.5f + etage * (cote + 0.03f), -1.8f + (r / parLigne) * pas};
+    };
+
+    const int echauffement = 20;
+    const int mesurees = 400;
+    int numero = 0;
+    double totalMs = 0.0;
+    uint32 drawCallsVus = 0;
+
+    while (running && window.IsOpen()) {
+        const auto debutImage = std::chrono::steady_clock::now();
+        events.PollEvents();
+        if (!running) break;
+
+        if (changement) {
+            numero = 0;
+            totalMs = 0.0;
+            changement = false;
+            Noter(std::string("--- essai : ") + std::to_string(nombre) + " cubes, " +
+                  (groupes ? "groupes" : "un par un") + ", vsync " + (vsync ? "oui" : "non"));
+        }
+
+        if (!renderer->BeginFrame()) continue;
+
+        NkCamera3DData camData;
+        camData.position = camPos;
+        camData.target = camTarget;
+        camData.up = {0.f, 1.f, 0.f};
+        camData.fovY = 70.f;
+        camData.aspect = (float32)devInfo.width / (float32)devInfo.height;
+        camData.nearPlane = 0.05f;
+        camData.farPlane = 200.f;
+        NkCamera3D cam(camData);
+
+        NkSceneContext sctx;
+        sctx.camera = cam;
+        sctx.time = 0.f;
+
+        NkLightDesc sun;
+        sun.type = NkLightType::NK_DIRECTIONAL;
+        sun.direction = {-0.4f, -1.f, -0.3f};
+        sun.color = {1.f, 0.95f, 0.85f};
+        sun.intensity = 3.f;
+        sun.castShadow = false;
+        sctx.lights.PushBack(sun);
+
+        r3d->BeginScene(sctx);
+
+        auto boite = [&](NkVec3f c, NkVec3f t, NkVec3f tint) {
+            NkDrawCall3D dc;
+            dc.mesh = meshCube;
+            dc.transform = NkMat4f::Translate(c) * NkMat4f::Scale(t);
+            dc.aabb = {{c.x - t.x * 0.5f, c.y - t.y * 0.5f, c.z - t.z * 0.5f},
+                       {c.x + t.x * 0.5f, c.y + t.y * 0.5f, c.z + t.z * 0.5f}};
+            dc.castShadow = false;
+            dc.tint = tint;
+            r3d->Submit(dc);
+        };
+
+        const NkVec3f mur = {0.72f, 0.70f, 0.66f};
+        boite({0.f, -epaisseurMur * 0.5f, 0.f}, {longueurMur, epaisseurMur, longueurMur}, {0.30f, 0.28f, 0.26f});
+        boite({0.f, hauteur + epaisseurMur * 0.5f, 0.f}, {longueurMur, epaisseurMur, longueurMur}, mur);
+        boite({0.f, hauteur * 0.5f, -centreMur}, {longueurMur, hauteur, epaisseurMur}, mur);
+        boite({0.f, hauteur * 0.5f, centreMur}, {longueurMur, hauteur, epaisseurMur}, mur);
+        boite({-centreMur, hauteur * 0.5f, 0.f}, {epaisseurMur, hauteur, longueurMur}, mur);
+        boite({centreMur, hauteur * 0.5f, 0.f}, {epaisseurMur, hauteur, longueurMur}, mur);
+        boite({-0.70f, 1.00f, zPorte}, {0.90f, 2.00f, epaisseurPanneau}, {0.35f, 0.20f, 0.10f});
+        boite({xFenetre, 1.40f, -0.90f}, {epaisseurPanneau, 1.00f, 1.20f}, {0.50f, 0.70f, 0.90f});
+        boite({xFenetre, 1.40f, 0.90f}, {epaisseurPanneau, 1.00f, 1.20f}, {0.50f, 0.70f, 0.90f});
+        boite({tableX, yPlateau, tableZ}, {longueur, epaisseur, profondeur}, {0.75f, 0.55f, 0.30f});
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                boite({tableX + signes[i] * decalX, hauteurPied * 0.5f, tableZ + signes[j] * decalZ},
+                      {section, hauteurPied, section}, {0.45f, 0.30f, 0.15f});
+            }
+        }
+
+        if (!groupes) {
+            for (int i = 0; i < nombre; i++) {
+                const NkVec3f c = positionCube(i);
+                boite(c, {cote, cote, cote}, {0.2f + 0.8f * (float32)(i % 7) / 6.f, 0.4f, 0.9f - 0.8f * (float32)(i % 5) / 4.f});
+            }
+        } else {
+            NkDrawCallInstanced dci;
+            dci.mesh = meshCube;
+            NkVec3f mini = positionCube(0), maxi = positionCube(0);
+            for (int i = 0; i < nombre; i++) {
+                const NkVec3f c = positionCube(i);
+                dci.transforms.PushBack(NkMat4f::Translate(c) * NkMat4f::Scale({cote, cote, cote}));
+                dci.tints.PushBack({0.2f + 0.8f * (float32)(i % 7) / 6.f, 0.4f, 0.9f - 0.8f * (float32)(i % 5) / 4.f});
+                if (c.x < mini.x) mini.x = c.x;
+                if (c.y < mini.y) mini.y = c.y;
+                if (c.z < mini.z) mini.z = c.z;
+                if (c.x > maxi.x) maxi.x = c.x;
+                if (c.y > maxi.y) maxi.y = c.y;
+                if (c.z > maxi.z) maxi.z = c.z;
+            }
+            dci.aabb = {{mini.x - cote, mini.y - cote, mini.z - cote}, {maxi.x + cote, maxi.y + cote, maxi.z + cote}};
+            r3d->SubmitInstanced(dci);
+        }
+
+        renderer->Present();
+        renderer->EndFrame();
+
+        drawCallsVus = renderer->GetStats().drawCalls;
+
+        const std::chrono::duration<double, std::milli> duree = std::chrono::steady_clock::now() - debutImage;
+        numero++;
+        if (numero > echauffement && numero <= echauffement + mesurees) {
+            totalMs += duree.count();
+        }
+        if (numero == echauffement + mesurees) {
+            const double moyenneMs = totalMs / mesurees;
+            const double fps = 1000.0 / moyenneMs;
+            Noter(std::string("RESULTAT ") + std::to_string(nombre) + " cubes, " +
+                  (groupes ? "groupes" : "un par un") + " : drawCalls " + std::to_string(drawCallsVus) +
+                  ", " + std::to_string(fps) + " images/s (" + std::to_string(moyenneMs) + " ms)");
+        }
+    }
+
+    device->WaitIdle();
+    NkRenderer::Destroy(renderer);
+    NkDeviceFactory::Destroy(device);
+    window.Close();
+    return 0;
+}
