@@ -1,0 +1,5 @@
+Facteur :
+Le facteur est l'echelle de chaque axe : dans le mauvais ordre, chaque coordonnee de la translation est multipliee par l'echelle de son axe. Pour le mur du fond (echelle 4,2 ; 2,5 ; 0,1) : x est multiplie par 4,2 (0 reste 0), y par 2,5 (1,25 devient 3,125) et z par 0,1 (-2,05 devient -0,205). Le mur de 1,25 m de hauteur se retrouve a 3,125 m, et de 2,05 m du centre a 0,205 m.
+
+Pourquoi :
+Les matrices s'appliquent de droite a gauche. Avec Scale * Translate, le point est d'abord deplace, puis l'echelle est appliquee a tout, y compris au deplacement : l'echelle attrape aussi la translation, puisque la position du centre est mesuree depuis l'origine et que l'echelle multiplie toutes les distances a l'origine. Avec Translate * Scale, l'echelle ne touche que la forme du cube, centree a l'origine, puis la translation le place sans le modifier. Sur mauvais.png, la salle n'est plus fermee : il ne reste que le sol, et les murs sont devenus de minces plaques sombres qui se croisent pres du centre, au-dessus de la camera, au lieu d'entourer la piece.
