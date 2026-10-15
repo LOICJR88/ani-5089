@@ -1,0 +1,13 @@
+Classement du plus cher au moins cher, avec le surcout par rapport au rendu 3D seul (mediane de trois series de 400 images, en Release, scene de 250 cubes de 4 m, vsync actif).
+
+RENDER3D+SHADOW : +11601 us (28474 us au total)
+RENDER3D+POST_PROCESS : +1176 us (18049 us au total)
+RENDER3D+ANIMATION : +309 us (17182 us au total)
+RENDER3D+RENDER2D : +245 us (17118 us au total)
+RENDER3D+OFFSCREEN : +203 us (17076 us au total)
+RENDER3D+VFX : +194 us (17067 us au total)
+RENDER3D+GPU_CULLING : +151 us (17024 us au total)
+
+Base : RENDER3D seul, 16873 us (mediane).
+
+Fiabilite : RENDER3D seul, mesure trois fois, va de 16491 a 17084 us, soit environ 600 us de variation. Les surcouts de SHADOW (+11,3 a +11,7 ms selon la serie) et de POST_PROCESS (+1,0 a +1,2 ms) sont bien au-dessus de ce bruit. Les cinq autres (de 151 a 309 us) sont en dessous : leur ordre n'est pas fiable, et ils sont tous trop petits pour etre distingues les uns des autres.
