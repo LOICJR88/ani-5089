@@ -1,0 +1,4 @@
+avant, projet : lancé depuis le dossier du projet, le mur du fond montre la photo : la texture est trouvée (mur sombre, avec les joints de carrelage visibles).
+avant, Build : lancé depuis Build\Bin\Debug-Windows\Chemin6, le mur du fond est violet : la texture n'est pas trouvée. Ligne du journal : [2026-10-18 11:17:15.393] [ERR] [default] [NkTextureLibrary.cpp:478 in Load] -> [NkTextureLibrary] Echec chargement texture : murs/mur.jpg
+apres, projet : lancé depuis le dossier du projet, le mur du fond montre la photo : la texture est trouvée.
+apres, Build : lancé depuis Build\Bin\Debug-Windows\Chemin6, le mur du fond montre maintenant la photo (il était violet avant). Ligne du journal : [2026-10-18 11:32:38.008] [INF] [default] [NkTextureLibrary.cpp:512 in Load] -> [NkTextureLibrary] Texture chargee : C:/Users/Jr/nkentseu/murs/mur.jpg (2268x4032 sRGB)
