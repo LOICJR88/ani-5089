@@ -1,8 +1,3 @@
-// Symptôme : la tête tourne toute seule, régulièrement, quand on ne touche plus à la souris (mesuré : environ 6,9 degrés par seconde avec brut figé à 1).
-// Cause : MouseRawDeltaX/Y garde le dernier déplacement brut sans jamais le remettre à zéro, et intégrer cette valeur à chaque image la rejoue sans fin.
-// Preuve : constaté dans NkEventState (OnRaw écrase la valeur, personne ne la consomme) et par mesure : la colonne brut reste à 1 souris immobile pendant que le lacet monte.
-// Correction : s'abonner aux événements bruts, accumuler soi-même les déplacements, puis lire l'accumulation une fois par image et la remettre à zéro juste après.
-
 #include "NKWindow/NKMain.h"
 #include "NKWindow/Core/NkWindow.h"
 #include "NKWindow/Core/NkWindowConfig.h"
@@ -35,19 +30,18 @@ NK_REGISTER_ENTRY_APPDATA_UPDATER(ConfigureAppData)
 
 namespace {
 
-	// Dimensions de la salle, en metres, en un seul endroit.
-	const float32 kPiece = 4.00f;	  // cote interieur du sol
-	const float32 kPlafond = 2.50f;	  // hauteur sous plafond
-	const float32 kMur = 0.10f;		  // epaisseur d'un mur
-	const float32 kPorteL = 0.90f;	  // porte : largeur
-	const float32 kPorteH = 2.00f;	  //         hauteur
-	const float32 kFenL = 1.20f;	  // fenetre : largeur
-	const float32 kFenH = 1.00f;	  //           hauteur
-	const float32 kFenY = 1.40f;	  //           hauteur de son centre
-	const float32 kTableL = 1.20f;	  // table : longueur
-	const float32 kTableP = 0.80f;	  //         profondeur
-	const float32 kTableH = 0.75f;	  //         hauteur du plateau
-	const float32 kYeux = 1.70f;	  // hauteur des yeux, debout
+	const float32 kPiece = 4.00f;	  
+	const float32 kPlafond = 2.50f;	 
+	const float32 kMur = 0.10f;		
+	const float32 kPorteL = 0.90f;	 
+	const float32 kPorteH = 2.00f;	
+	const float32 kFenL = 1.20f;	 
+	const float32 kFenH = 1.00f;	  
+	const float32 kFenY = 1.40f;	  
+	const float32 kTableL = 1.20f;	  
+	const float32 kTableP = 0.80f;	  
+	const float32 kTableH = 0.75f;	 
+	const float32 kYeux = 1.70f;	 
 
 	const float32 kDemi = kPiece * 0.5f;
 
@@ -72,7 +66,7 @@ namespace {
 		const NkVec3f bois = { 0.55f, 0.38f, 0.22f };
 		const NkVec3f vitre = { 0.75f, 0.85f, 0.92f };
 
-		{ // le sol : le plan est unitaire, une echelle S donne un cote S
+		{ 
 			NkDrawCall3D dc;
 			dc.mesh = meshes->GetPlane();
 			dc.transform = NkMat4f::Scale({ kPiece, 1.f, kPiece });
@@ -127,7 +121,7 @@ namespace {
 		return (uint64)strtoull(t, nullptr, 10);
 	}
 
-} // namespace
+}
 
 int nkmain(const NkEntryState &state) {
 	(void)state;
@@ -213,19 +207,14 @@ int nkmain(const NkEntryState &state) {
 	uint64 image = 0;
 	bool tourne = true;
 
-	// --- Exo 3 : trois lacets nourris par les memes evenements -----------
-	const float SENSIBILITE = 0.001f;	// radians par compte du capteur
+	const float SENSIBILITE = 0.001f;
 	const float RAD_EN_DEG = 57.2957795f;
 
-	// Version 1, "lu" : la version fautive, lit le module a chaque image.
 	float lacetLu = 0.0f;
 
-	// Version 2, "vide" : accumule, lit une fois par image, puis vide.
-	// C'est elle qui pilote la camera.
 	float accVideDX = 0.0f, accVideDY = 0.0f;
 	float lacetVide = 0.0f, tangageVide = 0.0f;
 
-	// Version 3, "sans vidage" : accumule et lit, mais ne vide jamais.
 	float accSansDX = 0.0f;
 	float lacetSans = 0.0f;
 
@@ -238,8 +227,6 @@ int nkmain(const NkEntryState &state) {
 			if (ev->As<NkWindowCloseEvent>() != nullptr) {
 				tourne = false;
 			}
-			// A chaque evenement brut : on AJOUTE, on ne vide jamais ici.
-			// Les deux accumulateurs recoivent exactement les memes evenements.
 			if (auto *raw = ev->As<NkMouseRawEvent>()) {
 				const float dx = (float)raw->GetDeltaX();
 				const float dy = (float)raw->GetDeltaY();
@@ -250,16 +237,13 @@ int nkmain(const NkEntryState &state) {
 		}
 		if (!tourne) break;
 
-		// Version 1 : fautive, lit le delta brut garde par le module.
 		lacetLu += (float)NkInput.MouseRawDeltaX() * SENSIBILITE;
 
-		// Version 2 : on LIT l'accumulation, puis on la VIDE (dans cet ordre).
 		lacetVide += accVideDX * SENSIBILITE;
 		tangageVide += accVideDY * SENSIBILITE;
 		accVideDX = 0.0f;
 		accVideDY = 0.0f;
 
-		// Version 3 : meme lecture, mais le vidage est oublie a dessein.
 		lacetSans += accSansDX * SENSIBILITE;
 
 		const double t = chrono.Elapsed().ToMilliseconds() / 1000.0;
@@ -286,7 +270,6 @@ int nkmain(const NkEntryState &state) {
 			NkCamera3DData cd;
 			cd.position = { 0.30f, kYeux, 1.20f };
 			cd.up = { 0.f, 1.f, 0.f };
-			// La camera suit la version juste (accumule puis vide).
 			const NkVec3f direction = {
 				-std::sin(lacetVide) * std::cos(tangageVide),
 				 std::sin(tangageVide),
