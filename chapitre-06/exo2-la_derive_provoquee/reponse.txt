@@ -1,0 +1,7 @@
+Ma sensibilité : 0.001 radian par compte du capteur, gardée identique pour toute la mesure.
+
+Vitesse de dérive : 6.9 deg/s
+
+D'où vient ce chiffre : je l'ai calculé sur deux lignes éloignées de derive.txt, celle de t = 3.0 s (lacet = 20.3 deg) et celle de t = 9.0 s (lacet = 61.5 deg) : (61.5 - 20.3) / (9.0 - 3.0) = 41.2 / 6 = 6.9 deg/s. Les valeurs relevées l'expliquent : brut vaut 1 à chaque ligne, et le nombre d'images par seconde est (1075 - 355) / (9.0 - 3.0) = 720 / 6 = 120 images/s. Chaque image ajoute au lacet brut x sensibilité = 1 x 0.001 = 0.001 rad, soit 0.0573 deg. Sur 120 images par seconde cela donne 0.0573 x 120 = 6.9 deg/s, ce qui retrouve exactement la vitesse mesurée. La dérive est donc égale à brut x sensibilité x images par seconde. Sur une autre machine, avec un autre nombre d'images par seconde, le chiffre serait différent.
+
+Pourquoi elle ne s'arrête pas : la colonne brut montre 1 sur toutes les lignes, alors que la souris est immobile depuis plusieurs secondes. Le module d'entrées garde le dernier déplacement brut reçu : l'événement l'écrase à chaque mouvement, mais personne ne le remet jamais à zéro quand les événements s'arrêtent. Comme mon code relit cette valeur et l'ajoute au lacet à chaque image, il rejoue indéfiniment le dernier mouvement, et le lacet monte de façon régulière (environ 6.9 deg par seconde) sans que je touche à la souris. La correction consiste à s'abonner aux événements, accumuler soi-même les déplacements, puis lire et vider l'accumulateur une seule fois par image.
