@@ -1,10 +1,3 @@
-// =============================================================================
-//  Exo 2 - la derive provoquee (VERSION FAUTIVE VOULUE)
-//  Base : etape 5, la salle aux dimensions du chapitre 2.
-//  La tete tient en deux flottants (lacet, tangage) en radians. A chaque
-//  image on AJOUTE le delta brut du module d'entrees, sans rien accumuler
-//  ni vider : le module ne remet jamais ce delta a zero, donc la tete derive.
-// =============================================================================
 #include "NKWindow/NKMain.h"
 #include "NKWindow/Core/NkWindow.h"
 #include "NKWindow/Core/NkWindowConfig.h"
@@ -36,24 +29,21 @@ NK_REGISTER_ENTRY_APPDATA_UPDATER(ConfigureAppData)
 
 namespace {
 
-	// Dimensions de la salle, en metres, en un seul endroit.
-	const float32 kPiece = 4.00f;	  // cote interieur du sol
-	const float32 kPlafond = 2.50f;	  // hauteur sous plafond
-	const float32 kMur = 0.10f;		  // epaisseur d'un mur
-	const float32 kPorteL = 0.90f;	  // porte : largeur
-	const float32 kPorteH = 2.00f;	  //         hauteur
-	const float32 kFenL = 1.20f;	  // fenetre : largeur
-	const float32 kFenH = 1.00f;	  //           hauteur
-	const float32 kFenY = 1.40f;	  //           hauteur de son centre
-	const float32 kTableL = 1.20f;	  // table : longueur
-	const float32 kTableP = 0.80f;	  //         profondeur
-	const float32 kTableH = 0.75f;	  //         hauteur du plateau
-	const float32 kYeux = 1.70f;	  // hauteur des yeux, debout
+	const float32 kPiece = 4.00f;	 
+	const float32 kPlafond = 2.50f;	 
+	const float32 kMur = 0.10f;		  
+	const float32 kPorteL = 0.90f;	  
+	const float32 kPorteH = 2.00f;	 
+	const float32 kFenL = 1.20f;	  
+	const float32 kFenH = 1.00f;	  
+	const float32 kFenY = 1.40f;	 
+	const float32 kTableL = 1.20f;	
+	const float32 kTableP = 0.80f;	  
+	const float32 kTableH = 0.75f;	  
+	const float32 kYeux = 1.70f;	  
 
 	const float32 kDemi = kPiece * 0.5f;
 
-	// Un pave pose dans la salle. `centre` est le centre geometrique, `taille`
-	// les trois dimensions en metres.
 	void Pave(NkRender3D *r3d, NkMeshSystem *meshes, const NkVec3f &centre,
 			  const NkVec3f &taille, const NkVec3f &teinte, float32 rugosite = 1.f) {
 		NkDrawCall3D dc;
@@ -75,7 +65,7 @@ namespace {
 		const NkVec3f bois = { 0.55f, 0.38f, 0.22f };
 		const NkVec3f vitre = { 0.75f, 0.85f, 0.92f };
 
-		{ // le sol : le plan est unitaire, une echelle S donne un cote S
+		{ 
 			NkDrawCall3D dc;
 			dc.mesh = meshes->GetPlane();
 			dc.transform = NkMat4f::Scale({ kPiece, 1.f, kPiece });
@@ -90,27 +80,22 @@ namespace {
 		const float32 yMur = kPlafond * 0.5f;
 		const float32 bord = kDemi + kMur * 0.5f;
 
-		// Quatre murs. La porte est dans celui du fond, les fenetres a gauche.
 		Pave(r3d, meshes, { 0.f, yMur, -bord }, { kPiece, kPlafond, kMur }, grisMur);
 		Pave(r3d, meshes, { 0.f, yMur, bord }, { kPiece, kPlafond, kMur }, grisMur);
 		Pave(r3d, meshes, { -bord, yMur, 0.f }, { kMur, kPlafond, kPiece }, grisMur);
 		Pave(r3d, meshes, { bord, yMur, 0.f }, { kMur, kPlafond, kPiece }, grisMur);
 
-		// Le plafond.
 		Pave(r3d, meshes, { 0.f, kPlafond + kMur * 0.5f, 0.f },
 			 { kPiece, kMur, kPiece }, grisMur);
 
-		// La porte, fermee : un panneau plaque contre le mur du fond.
 		Pave(r3d, meshes, { -0.70f, kPorteH * 0.5f, -kDemi + 0.02f },
 			 { kPorteL, kPorteH, 0.04f }, bois, 0.6f);
 
-		// Deux fenetres sur le mur de gauche.
 		Pave(r3d, meshes, { -kDemi + 0.02f, kFenY, -0.90f },
 			 { 0.04f, kFenH, kFenL }, vitre, 0.15f);
 		Pave(r3d, meshes, { -kDemi + 0.02f, kFenY, 0.90f },
 			 { 0.04f, kFenH, kFenL }, vitre, 0.15f);
 
-		// La table : un plateau et quatre pieds.
 		const float32 tx = 0.60f, tz = 0.70f;
 		const float32 ep = 0.05f;
 		Pave(r3d, meshes, { tx, kTableH - ep * 0.5f, tz },
@@ -125,7 +110,6 @@ namespace {
 				 { pied, hp, pied }, bois, 0.6f);
 		}
 
-		// Le repere d'un metre : un cube d'un metre de cote pose au sol.
 		Pave(r3d, meshes, { -1.10f, 0.50f, 1.20f }, { 1.f, 1.f, 1.f },
 			 { 0.85f, 0.80f, 0.30f }, 0.8f);
 	}
@@ -136,7 +120,7 @@ namespace {
 		return (uint64)strtoull(t, nullptr, 10);
 	}
 
-} // namespace
+}
 
 int nkmain(const NkEntryState &state) {
 	(void)state;
@@ -165,8 +149,6 @@ int nkmain(const NkEntryState &state) {
 		return 1;
 	}
 
-	// Deux renderers : celui d'ecran possede l'image et ne fait que du 2D ;
-	// celui de la salle dessine dans une cible hors ecran, affichee ensuite.
 	NkRendererConfig cfgEcran =
 		NkRendererConfig::For2D(devInit.api, devInit.width, devInit.height);
 	NkRenderer *rEcran = NkRenderer::Create(device, cfgEcran);
@@ -183,7 +165,7 @@ int nkmain(const NkEntryState &state) {
 	od.hdr = false;
 	od.colorFmt = NkGPUFormat::NK_RGBA8_UNORM;
 	od.readable = true;
-	od.readback = true; // sans quoi Capture() ne peut rien relire
+	od.readback = true; 
 	od.name = "MaSalle_Cible";
 
 	NkOffscreenTarget *cible = rEcran->CreateOffscreen(od);
@@ -224,12 +206,11 @@ int nkmain(const NkEntryState &state) {
 	uint64 image = 0;
 	bool tourne = true;
 
-	// --- Exo 2 : la tete fautive (voulu) ---------------------------------
-	float gLacet = 0.0f;				// radians
-	float gTangage = 0.0f;				// radians
-	const float SENSIBILITE = 0.001f;	// radians par compte du capteur
-	unsigned long long gImages = 0;		// images depuis le lancement
-	double gProchainReleve = 1.0;		// prochain releve, en secondes
+	float gLacet = 0.0f;				
+	float gTangage = 0.0f;				
+	const float SENSIBILITE = 0.001f;
+	unsigned long long gImages = 0;	
+	double gProchainReleve = 1.0;		
 	NkChrono gChrono;
 
 	while (tourne && fenetre.IsOpen()) {
@@ -241,10 +222,6 @@ int nkmain(const NkEntryState &state) {
 		}
 		if (!tourne) break;
 
-		// VERSION FAUTIVE VOULUE : on lit le delta brut garde par le module
-		// d'entrees et on l'ajoute a chaque image, SANS accumuler ni vider.
-		// Le module ne remet jamais ce delta a zero : la tete derive seule
-		// quand la souris est immobile.
 		const int brut = (int)NkInput.MouseRawDeltaX();
 		gLacet += (float)brut * SENSIBILITE;
 		gTangage += (float)NkInput.MouseRawDeltaY() * SENSIBILITE;
@@ -272,7 +249,6 @@ int nkmain(const NkEntryState &state) {
 			NkCamera3DData cd;
 			cd.position = { 0.30f, kYeux, 1.20f };
 			cd.up = { 0.f, 1.f, 0.f };
-			// Direction du regard a partir du lacet et du tangage.
 			const NkVec3f direction = {
 				-std::sin(gLacet) * std::cos(gTangage),
 				 std::sin(gTangage),
