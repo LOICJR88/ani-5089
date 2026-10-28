@@ -1,12 +1,3 @@
-// =============================================================================
-//  Exo 4 - les crochets de test.
-//  La tete est rangee dans une structure : PoserTete() la pose sans souris,
-//  et un test sans fenetre verifie le regard (MASALLE_TEST=1).
-//
-//  Convention de la salle : avant = -Z, haut = +Y, repere de la main droite.
-//  Le lacet positif tourne la tete vers la GAUCHE (sens trigonometrique vu
-//  d'en haut). Debout face a -Z, la gauche est du cote -X.
-// =============================================================================
 #include "NKWindow/NKMain.h"
 #include "NKWindow/Core/NkWindow.h"
 #include "NKWindow/Core/NkWindowConfig.h"
@@ -37,40 +28,35 @@ NK_REGISTER_ENTRY_APPDATA_UPDATER(ConfigureAppData)
 
 namespace {
 
-	// Dimensions de la salle, en metres, en un seul endroit.
-	const float32 kPiece = 4.00f;	  // cote interieur du sol
-	const float32 kPlafond = 2.50f;	  // hauteur sous plafond
-	const float32 kMur = 0.10f;		  // epaisseur d'un mur
-	const float32 kPorteL = 0.90f;	  // porte : largeur
-	const float32 kPorteH = 2.00f;	  //         hauteur
-	const float32 kFenL = 1.20f;	  // fenetre : largeur
-	const float32 kFenH = 1.00f;	  //           hauteur
-	const float32 kFenY = 1.40f;	  //           hauteur de son centre
-	const float32 kTableL = 1.20f;	  // table : longueur
-	const float32 kTableP = 0.80f;	  //         profondeur
-	const float32 kTableH = 0.75f;	  //         hauteur du plateau
-	const float32 kYeux = 1.70f;	  // hauteur des yeux, debout
+	const float32 kPiece = 4.00f;	  
+	const float32 kPlafond = 2.50f;	  
+	const float32 kMur = 0.10f;		  
+	const float32 kPorteL = 0.90f;	  
+	const float32 kPorteH = 2.00f;	  
+	const float32 kFenL = 1.20f;	  
+	const float32 kFenH = 1.00f;	 
+	const float32 kFenY = 1.40f;	 
+	const float32 kTableL = 1.20f;	  
+	const float32 kTableP = 0.80f;	  
+	const float32 kTableH = 0.75f;	  
+	const float32 kYeux = 1.70f;	  
 
 	const float32 kDemi = kPiece * 0.5f;
 
 	const float kPi = 3.14159265f;
 	const float kDeg2Rad = kPi / 180.0f;
 
-	// ---- La tete : lacet et tangage en radians, position en metres --------
 	struct Tete {
 		float lacet = 0.0f;
 		float tangage = 0.0f;
 		NkVec3f position = { 0.30f, kYeux, 1.20f };
 
-		// Direction du regard : avant = -Z, haut = +Y.
 		NkVec3f Regard() const {
 			return { -std::sin(lacet) * std::cos(tangage),
 					  std::sin(tangage),
 					 -std::cos(lacet) * std::cos(tangage) };
 		}
 
-		// Pose la tete sans passer par la souris (meme role que
-		// DebugSetHead du simulateur du moteur).
 		void PoserTete(float lacetRad, float tangageRad, const NkVec3f &pos) {
 			lacet = lacetRad;
 			tangage = tangageRad;
@@ -78,8 +64,6 @@ namespace {
 		}
 	};
 
-	// ---- Le test ------------------------------------------------------------
-	// Ajoute 0.0f pour ne jamais imprimer "-0.000".
 	float Propre(float v) { return v + 0.0f; }
 
 	bool Epreuve(float lacetDeg, float tangageDeg, float ax, float ay, float az) {
@@ -88,7 +72,6 @@ namespace {
 					   { 0.0f, kYeux, 0.0f });
 		const NkVec3f d = tete.Regard();
 
-		// Tolerance : cos(90 deg) en float ne vaut pas exactement zero.
 		const float tol = 1.0e-4f;
 		const bool ok = std::fabs(d.x - ax) < tol && std::fabs(d.y - ay) < tol &&
 						std::fabs(d.z - az) < tol;
@@ -102,17 +85,11 @@ namespace {
 		return ok;
 	}
 
-	// Les directions attendues sont ECRITES EN DUR, deduites de la convention
-	// (avant = -Z, haut = +Y, main droite), jamais recalculees avec Regard().
 	bool LancerLeTest() {
 		bool tout = true;
-		// Lacet 0 : on regarde droit devant, vers -Z.
 		tout &= Epreuve(0.0f, 0.0f, 0.0f, 0.0f, -1.0f);
-		// Lacet +90 : un quart de tour vers la gauche, vers -X.
 		tout &= Epreuve(90.0f, 0.0f, -1.0f, 0.0f, 0.0f);
-		// Lacet -90 : un quart de tour vers la droite, vers +X.
 		tout &= Epreuve(-90.0f, 0.0f, 1.0f, 0.0f, 0.0f);
-		// Tangage +45 : on leve les yeux, moitie avant (-Z), moitie haut (+Y).
 		tout &= Epreuve(0.0f, 45.0f, 0.0f, 0.70710678f, -0.70710678f);
 		return tout;
 	}
@@ -138,7 +115,7 @@ namespace {
 		const NkVec3f bois = { 0.55f, 0.38f, 0.22f };
 		const NkVec3f vitre = { 0.75f, 0.85f, 0.92f };
 
-		{ // le sol : le plan est unitaire, une echelle S donne un cote S
+		{ 
 			NkDrawCall3D dc;
 			dc.mesh = meshes->GetPlane();
 			dc.transform = NkMat4f::Scale({ kPiece, 1.f, kPiece });
@@ -193,13 +170,11 @@ namespace {
 		return (uint64)strtoull(t, nullptr, 10);
 	}
 
-} // namespace
+} 
 
 int nkmain(const NkEntryState &state) {
 	(void)state;
 
-	// Le test tourne AVANT la fenetre : pas de souris, pas d'ecran.
-	// Le code de sortie de nkmain est le verdict : 0 si tout passe, 1 sinon.
 	if (EnvU64("MASALLE_TEST", 0) == 1) {
 		const bool reussi = LancerLeTest();
 		std::printf("[MaSalle] test : %s\n", reussi ? "tout passe" : "ECHEC");
@@ -285,8 +260,7 @@ int nkmain(const NkEntryState &state) {
 	uint64 image = 0;
 	bool tourne = true;
 
-	// La tete, pilotee par la souris (version juste de l'exo 3).
-	const float SENSIBILITE = 0.001f;	// radians par compte du capteur
+	const float SENSIBILITE = 0.001f;
 	Tete tete;
 	float accDX = 0.0f, accDY = 0.0f;
 
@@ -296,7 +270,6 @@ int nkmain(const NkEntryState &state) {
 			if (ev->As<NkWindowCloseEvent>() != nullptr) {
 				tourne = false;
 			}
-			// A chaque evenement brut : on ajoute, on ne vide jamais ici.
 			if (auto *raw = ev->As<NkMouseRawEvent>()) {
 				accDX += (float)raw->GetDeltaX();
 				accDY += (float)raw->GetDeltaY();
@@ -304,7 +277,6 @@ int nkmain(const NkEntryState &state) {
 		}
 		if (!tourne) break;
 
-		// Une fois par image : on LIT l'accumulation, puis on la VIDE.
 		tete.lacet += accDX * SENSIBILITE;
 		tete.tangage += accDY * SENSIBILITE;
 		accDX = 0.0f;
