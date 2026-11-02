@@ -1,0 +1,9 @@
+budget 72 Hz : 13.889 ms
+budget 90 Hz : 11.111 ms
+budget 120 Hz : 8.333 ms
+
+avec attente de l'ecran :
+ecran : moyenne 8.333 ms, mediane 8.337 ms, max 9.177 ms
+
+sans attente (NK_VK_MAILBOX=1) :
+ecran : moyenne 8.333 ms, mediane 8.312 ms, max 11.161 ms

@@ -1,0 +1,8 @@
+La fréquence de mon écran :
+Les deux mesures donnent une moyenne de 8.333 ms, soit 1000 / 120 : mon écran tourne à 120 Hz. Les réglages de Windows (Affichage avancé) indiquent 120.002 Hz, ce qui confirme la mesure : c'est l'écran qui fixe le rythme de la salle.
+
+La cadence que je tiens :
+Je tiens 120 Hz en moyenne (8.333 ms pour un budget de 8.333 ms), mais pas sur chaque image : le maximum atteint 9.177 ms avec attente et 11.161 ms sans attente, au-dessus du budget de 8.333 ms. Je dis donc 120 Hz en moyenne, 90 Hz pour être sûr. Le maximum de 11.161 ms dépasse même légèrement le budget de 90 Hz (11.111 ms) dans la mesure sans attente. La seconde mesure n'a rien montré de plus rapide que la première : la variable NK_VK_MAILBOX=1 était définie et le journal indique api=Vulkan, mais la moyenne est restée à 8.333 ms. Je n'ai donc pas pu observer le rythme libre de la salle, et je ne sais pas expliquer pourquoi.
+
+Ce que dit le maximum :
+La moyenne laissait croire que tout allait bien : elle est exactement égale au budget. Le maximum montre que certaines images le dépassent, de 0.8 ms avec attente et de près de 3 ms sans attente. Un casque montre chaque image, pas la moyenne : une image en retard se verrait, même si la moyenne est parfaite.
