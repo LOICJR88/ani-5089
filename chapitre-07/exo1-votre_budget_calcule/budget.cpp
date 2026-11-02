@@ -1,21 +1,3 @@
-// =============================================================================
-//  Étape 5 — la salle, en cubes, aux dimensions du chapitre 2.
-//
-//  Pas encore de casque, pas encore de tête : une caméra fixe, posée à hauteur
-//  d'yeux, qui regarde la porte. C'est le décor sur lequel tout le reste du
-//  livre se jugera, et c'est pour cela qu'il est bâti maintenant.
-//
-//  Toutes les dimensions sont en MÈTRES, et viennent du tableau du chapitre 7 :
-//      sol 4 x 4, murs 2,5 de haut, porte 0,9 x 2,0,
-//      deux fenêtres 1,2 x 1,0, table 1,2 x 0,8 avec le plateau à 0,75.
-//
-//  Le cube et la sphère de NkMeshSystem sont UNITAIRES, de demi-étendue 0,5 :
-//  une échelle S donne donc une taille S, et poser un objet au sol demande de
-//  le translater de S/2. Le plan de GetPlane() est unitaire LUI AUSSI, de
-//  demi-étendue 0,5 : une échelle S y donne un côté S, et non un demi-côté.
-//  Se tromper là-dessus donne un sol deux fois trop petit, qui flotte au
-//  milieu de la pièce, et rien ne le signale.
-// =============================================================================
 #include "NKWindow/NKMain.h"
 #include "NKWindow/Core/NkWindow.h"
 #include "NKWindow/Core/NkWindowConfig.h"
@@ -47,27 +29,21 @@ NK_REGISTER_ENTRY_APPDATA_UPDATER(ConfigureAppData)
 
 namespace {
 
-	// ── Les dimensions de la salle, en un seul endroit ────────────────────
-	// Elles sont ici, nommées, et pas semées dans le code : au chapitre 21 on
-	// les lira depuis un fichier, et ce sont ces noms-là qui deviendront des
-	// champs.
-	const float32 kPiece = 4.00f;	  // côté intérieur du sol
-	const float32 kPlafond = 2.50f;	  // hauteur sous plafond
-	const float32 kMur = 0.10f;		  // épaisseur d'un mur
-	const float32 kPorteL = 0.90f;	  // porte : largeur
-	const float32 kPorteH = 2.00f;	  //         hauteur
-	const float32 kFenL = 1.20f;	  // fenêtre : largeur
-	const float32 kFenH = 1.00f;	  //           hauteur
-	const float32 kFenY = 1.40f;	  //           hauteur de son centre
-	const float32 kTableL = 1.20f;	  // table : longueur
-	const float32 kTableP = 0.80f;	  //         profondeur
-	const float32 kTableH = 0.75f;	  //         hauteur du plateau
-	const float32 kYeux = 1.70f;	  // hauteur des yeux, debout
+	const float32 kPiece = 4.00f;	  
+	const float32 kPlafond = 2.50f;	  
+	const float32 kMur = 0.10f;		  
+	const float32 kPorteL = 0.90f;	 
+	const float32 kPorteH = 2.00f;	  
+	const float32 kFenL = 1.20f;	  
+	const float32 kFenH = 1.00f;	  
+	const float32 kFenY = 1.40f;	  
+	const float32 kTableL = 1.20f;	  
+	const float32 kTableP = 0.80f;	  
+	const float32 kTableH = 0.75f;	  
+	const float32 kYeux = 1.70f;	  
 
 	const float32 kDemi = kPiece * 0.5f;
 
-	// Un pavé posé dans la salle. `centre` est le centre géométrique, `taille`
-	// les trois dimensions en mètres : on ne manipule jamais autre chose.
 	void Pave(NkRender3D *r3d, NkMeshSystem *meshes, const NkVec3f &centre,
 			  const NkVec3f &taille, const NkVec3f &teinte, float32 rugosite = 1.f) {
 		NkDrawCall3D dc;
@@ -89,7 +65,7 @@ namespace {
 		const NkVec3f bois = { 0.55f, 0.38f, 0.22f };
 		const NkVec3f vitre = { 0.75f, 0.85f, 0.92f };
 
-		{ // le sol : le plan est unitaire, une échelle S donne un côté S
+		{ 
 			NkDrawCall3D dc;
 			dc.mesh = meshes->GetPlane();
 			dc.transform = NkMat4f::Scale({ kPiece, 1.f, kPiece });
@@ -104,30 +80,22 @@ namespace {
 		const float32 yMur = kPlafond * 0.5f;
 		const float32 bord = kDemi + kMur * 0.5f;
 
-		// Quatre murs. La porte est dans celui du fond, les fenêtres à gauche.
 		Pave(r3d, meshes, { 0.f, yMur, -bord }, { kPiece, kPlafond, kMur }, grisMur);
 		Pave(r3d, meshes, { 0.f, yMur, bord }, { kPiece, kPlafond, kMur }, grisMur);
 		Pave(r3d, meshes, { -bord, yMur, 0.f }, { kMur, kPlafond, kPiece }, grisMur);
 		Pave(r3d, meshes, { bord, yMur, 0.f }, { kMur, kPlafond, kPiece }, grisMur);
 
-		// Le plafond. On l'oublie toujours, et le trou ne se voit qu'en levant
-		// les yeux, c'est-à-dire le jour de la démonstration.
 		Pave(r3d, meshes, { 0.f, kPlafond + kMur * 0.5f, 0.f },
 			 { kPiece, kMur, kPiece }, grisMur);
 
-		// La porte, fermée jusqu'au chapitre 17 : un panneau plaqué contre le
-		// mur du fond, décalé pour ne pas se battre avec lui en profondeur.
 		Pave(r3d, meshes, { -0.70f, kPorteH * 0.5f, -kDemi + 0.02f },
 			 { kPorteL, kPorteH, 0.04f }, bois, 0.6f);
 
-		// Deux fenêtres sur le mur de gauche, pour qu'il y ait un dehors.
 		Pave(r3d, meshes, { -kDemi + 0.02f, kFenY, -0.90f },
 			 { 0.04f, kFenH, kFenL }, vitre, 0.15f);
 		Pave(r3d, meshes, { -kDemi + 0.02f, kFenY, 0.90f },
 			 { 0.04f, kFenH, kFenL }, vitre, 0.15f);
 
-		// La table : un plateau et quatre pieds. Le chapitre 12 y posera un
-		// objet, le 21 la déplacera.
 		const float32 tx = 0.60f, tz = 0.70f;
 		const float32 ep = 0.05f;
 		Pave(r3d, meshes, { tx, kTableH - ep * 0.5f, tz },
@@ -142,8 +110,6 @@ namespace {
 				 { pied, hp, pied }, bois, 0.6f);
 		}
 
-		// Le repère d'un mètre du chapitre 9 : un cube d'un mètre de côté,
-		// posé au sol, contre lequel on juge l'échelle de tout le reste.
 		Pave(r3d, meshes, { -1.10f, 0.50f, 1.20f }, { 1.f, 1.f, 1.f },
 			 { 0.85f, 0.80f, 0.30f }, 0.8f);
 	}
@@ -154,12 +120,11 @@ namespace {
 		return (uint64)strtoull(t, nullptr, 10);
 	}
 
-} // namespace
+} 
 
 int nkmain(const NkEntryState &state) {
 	(void)state;
 
-	// Budget d'une image = 1000 ms / cadence, calcule ici et pas ecrit en dur
 	const double cadences[3] = { 72.0, 90.0, 120.0 };
 	for (int i = 0; i < 3; ++i) {
 		std::printf("budget %d Hz : %.3f ms\n", (int)cadences[i],
@@ -190,24 +155,6 @@ int nkmain(const NkEntryState &state) {
 		return 1;
 	}
 
-	// ── Deux renderers, et c'est voulu ─────────────────────────────────────
-	//
-	// Le premier POSSÈDE l'image : c'est lui qui appelle BeginFrame, Present et
-	// EndFrame, et il ne dessine que du 2D.
-	//
-	// Le second dessine la salle, mais PAS à l'écran : dans une cible hors
-	// écran, une texture qu'on peut relire. On affiche ensuite cette texture
-	// dans la fenêtre, et on peut l'enregistrer en PNG.
-	//
-	// Pourquoi ce détour, alors que dessiner directement à l'écran marcherait ?
-	// Deux raisons, et la seconde est celle qui compte pour ce livre :
-	//   - une chaîne d'échange ne se relit pas, donc on ne peut pas la capturer,
-	//     donc on ne peut pas vérifier une image autrement qu'à l'œil ;
-	//   - au chapitre 9, il faudra dessiner DEUX fois, dans deux cibles
-	//     différentes. Autant monter la machinerie maintenant, avec une seule.
-	//
-	// Un renderer par cible, et non une cible qu'on change : SetFinalColorTarget
-	// reconstruit le graphe de rendu, et le faire à chaque image est banni.
 	NkRendererConfig cfgEcran =
 		NkRendererConfig::For2D(devInit.api, devInit.width, devInit.height);
 	NkRenderer *rEcran = NkRenderer::Create(device, cfgEcran);
@@ -224,7 +171,7 @@ int nkmain(const NkEntryState &state) {
 	od.hdr = false;
 	od.colorFmt = NkGPUFormat::NK_RGBA8_UNORM;
 	od.readable = true;
-	od.readback = true; // sans quoi Capture() ne peut rien relire
+	od.readback = true; 
 	od.name = "MaSalle_Cible";
 
 	NkOffscreenTarget *cible = rEcran->CreateOffscreen(od);
@@ -242,9 +189,6 @@ int nkmain(const NkEntryState &state) {
 	cfgSalle.Disable(NK_SS_OVERLAY);
 	cfgSalle.Enable(NK_SS_OFFSCREEN);
 
-	// NK_SS_POST_PROCESS porte le tonemap, le bloom, le FXAA et le SSAO.
-	// MASALLE_POST=0 le coupe : c'est l'expérience qui dit si un défaut
-	// d'image vient de la scène ou d'un effet écran. Voir le journal de bord.
 	if (EnvU64("MASALLE_POST", 1) == 0) {
 		cfgSalle.Disable(NK_SS_POST_PROCESS);
 	}
@@ -262,13 +206,11 @@ int nkmain(const NkEntryState &state) {
 	std::printf("[MaSalle] salle de %.1f m sur %.1f m, plafond a %.2f m\n",
 				(double)kPiece, (double)kPiece, (double)kPlafond);
 
-	// Sortie automatique, pour que la construction se vérifie sans main
-	// humaine : MASALLE_EXIT=<image> arrête proprement.
 	const uint64 imageDeSortie = EnvU64("MASALLE_EXIT", 0);
 	const uint64 imageDeCapture = EnvU64("MASALLE_SHOT", 0);
 
-	const uint64 kEcartes = 30;	   // images de demarrage ecartees
-	const size_t kMesures = 1000;  // intervalles gardes
+	const uint64 kEcartes = 30;	   
+	const size_t kMesures = 1000; 
 	std::vector<double> intervalles;
 	intervalles.reserve(kMesures);
 	uint64 debutPrecedent = 0;
@@ -276,7 +218,6 @@ int nkmain(const NkEntryState &state) {
 	bool tourne = true;
 
 	while (tourne && fenetre.IsOpen()) {
-		// Debut d'image : on note l'instant, avant tout le reste
 		const uint64 debutImage = (uint64)NkChrono::Now().nanoseconds;
 		if (image > kEcartes && intervalles.size() < kMesures) {
 			intervalles.push_back((double)(debutImage - debutPrecedent) * 1e-6);
@@ -296,9 +237,6 @@ int nkmain(const NkEntryState &state) {
 
 			NkRender3D *r3d = renderer->GetRender3D();
 
-			// Ce que BeginFrame ferait si ce renderer possédait l'image. En
-			// mode partagé, on le rejoue à la main. Oublier ResetFrame piétine
-			// les tampons uniformes d'une image à l'autre.
 			renderer->FlushGraphRebuilds();
 			r3d->ResetFrame();
 			if (auto *mc = renderer->GetMaterialCollection()) {
@@ -306,8 +244,7 @@ int nkmain(const NkEntryState &state) {
 			}
 
 			NkCamera3DData cd;
-			// À hauteur d'yeux, un mètre en avant du mur du fond, regardant
-			// la porte. Une caméra fixe : la tête arrive au chapitre 7.
+
 			cd.position = { 0.30f, kYeux, 1.20f };
 			cd.target = { -0.70f, 1.10f, -kDemi };
 			cd.up = { 0.f, 1.f, 0.f };
@@ -319,7 +256,6 @@ int nkmain(const NkEntryState &state) {
 			NkSceneContext sctx;
 			sctx.camera = NkCamera3D(cd);
 			sctx.time = (float32)image / 60.f;
-			// La part de lumière qui vient du ciel (0 = aucune, 1 = toute).
 			r3d->SetIBLStrength(0.35f);
 
 			NkLightDesc soleil;
@@ -333,14 +269,10 @@ int nkmain(const NkEntryState &state) {
 			r3d->BeginScene(sctx);
 			SoumettreLaSalle(r3d, renderer->GetMeshSystem());
 
-			// Le graphe de la salle s'exécute sur le command buffer de l'écran,
-			// AVANT son Present : deux passes imbriquées sont interdites.
 			if (auto *graph = renderer->GetRenderGraph()) {
 				graph->Execute(cmd);
 			}
 
-			// La texture, montrée dans la fenêtre. C'est tout ce que fait le
-			// renderer d'écran : recopier une image déjà faite.
 			if (auto *r2d = rEcran->GetRender2D()) {
 				r2d->DrawImage(cible->GetColorResult(),
 							   { 0.f, 0.f, (float32)devInit.width,
@@ -353,8 +285,6 @@ int nkmain(const NkEntryState &state) {
 
 		++image;
 
-		// La capture, à une image nommée : déterministe, reproductible, et
-		// c'est elle qui fait les figures du livre.
 		if (imageDeCapture != 0 && image == imageDeCapture) {
 			const char *chemin = getenv("MASALLE_SHOT_PATH");
 			if (chemin == nullptr || *chemin == '\0') {
