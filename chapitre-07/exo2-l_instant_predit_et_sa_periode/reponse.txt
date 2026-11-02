@@ -1,0 +1,8 @@
+Ce qui est stable :
+Sur mes vingt lignes à 72 Hz, l'écart (predit - maintenant) est le même à chaque image : 13.889 ms. Il est stable parce que mon code le fabrique : l'instant prédit vaut maintenant plus la période, et la période est une constante tirée de la cadence. Cette stabilité ne prouve rien sur la réalité. Ce qui change à chaque ligne, c'est maintenant et predit, qui avancent ensemble. Ce qui compte, c'est reel - predit, qui compare la prédiction à ce qui arrive vraiment : il ne vaut 0 que si la période annoncée est celle de l'écran, et il dépend de la cadence choisie (-8.333, -5.554, -2.777 et 0.001 ms à 60, 72, 90 et 120 Hz).
+
+Un divisé par la cadence :
+La période vaut 1000 / cadence, en millisecondes : 1000 / 60 = 16.667 ms, 1000 / 72 = 13.889 ms, 1000 / 90 = 11.111 ms et 1000 / 120 = 8.333 ms. Mes quatre lignes imprimées donnent exactement ces valeurs.
+
+La période de mon écran :
+Le début réel d'une image moins l'instant prédit à l'image d'avant vaut (intervalle réel - période). Donc l'intervalle réel vaut période + (reel - predit) : 16.667 - 8.333 = 8.334 ms, 13.889 - 5.554 = 8.335 ms, 11.111 - 2.777 = 8.334 ms et 8.333 + 0.001 = 8.334 ms. Les quatre cadences donnent la même période réelle, 8.334 ms, soit 1000 / 8.334 = 119.99 Hz. Mon écran tourne donc à 120 Hz, ce que confirme Windows (120.002 Hz). C'est le seul réglage où la prédiction tombe juste (reel - predit proche de 0) ; aux trois autres, la salle prédit trop loin, car l'écran continue de rythmer les images à 8.334 ms.
