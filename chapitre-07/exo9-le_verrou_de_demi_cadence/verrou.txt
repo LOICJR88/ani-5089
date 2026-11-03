@@ -1,0 +1,3 @@
+copies de la salle : 2000
+sans verrou : moyenne 32.962 ms, ecart type 5.060 ms, max 62.285 ms
+avec verrou : moyenne 41.683 ms, ecart type 0.220 ms, max 45.852 ms
