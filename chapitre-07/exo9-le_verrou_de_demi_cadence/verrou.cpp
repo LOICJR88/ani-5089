@@ -1,14 +1,3 @@
-// =============================================================================
-//  Etape 5 - la salle, en cubes, aux dimensions du chapitre 2.
-//  Version exo 9 : la salle est soumise K fois (copies decalees de 5 m le long
-//  de x), on mesure l'intervalle entre deux debuts d'image, et on peut verrouiller
-//  la cadence a deux periodes de l'ecran.
-//
-//  Variables d'environnement :
-//     MASALLE_HZ      frequence de l'ecran, en Hz (48 sur ma machine)
-//     MASALLE_COPIES  nombre de copies de la salle (1 par defaut)
-//     MASALLE_VERROU  1 = verrou de demi-cadence, 0 = sans
-// =============================================================================
 #include "NKWindow/NKMain.h"
 #include "NKWindow/Core/NkWindow.h"
 #include "NKWindow/Core/NkWindowConfig.h"
@@ -40,28 +29,23 @@ NK_REGISTER_ENTRY_APPDATA_UPDATER(ConfigureAppData)
 
 namespace {
 
-	// -- Les dimensions de la salle, en un seul endroit ----------------------
-	const float32 kPiece = 4.00f;	  // cote interieur du sol
-	const float32 kPlafond = 2.50f;	  // hauteur sous plafond
-	const float32 kMur = 0.10f;		  // epaisseur d'un mur
-	const float32 kPorteL = 0.90f;	  // porte : largeur
-	const float32 kPorteH = 2.00f;	  //         hauteur
-	const float32 kFenL = 1.20f;	  // fenetre : largeur
-	const float32 kFenH = 1.00f;	  //           hauteur
-	const float32 kFenY = 1.40f;	  //           hauteur de son centre
-	const float32 kTableL = 1.20f;	  // table : longueur
-	const float32 kTableP = 0.80f;	  //         profondeur
-	const float32 kTableH = 0.75f;	  //         hauteur du plateau
-	const float32 kYeux = 1.70f;	  // hauteur des yeux, debout
+	const float32 kPiece = 4.00f;	
+	const float32 kPlafond = 2.50f;	  
+	const float32 kMur = 0.10f;		 
+	const float32 kPorteL = 0.90f;	  
+	const float32 kPorteH = 2.00f;	  
+	const float32 kFenL = 1.20f;	  
+	const float32 kFenH = 1.00f;	  
+	const float32 kFenY = 1.40f;	 
+	const float32 kTableL = 1.20f;	 
+	const float32 kTableP = 0.80f;	 
+	const float32 kTableH = 0.75f;	  
+	const float32 kYeux = 1.70f;	 
 
 	const float32 kDemi = kPiece * 0.5f;
 
-	// Decalage de la copie courante de la salle, le long de x (en metres)
 	NkVec3f gDecalage = { 0.f, 0.f, 0.f };
 
-	// Un pave pose dans la salle. `centreLocal` est le centre geometrique dans la
-	// salle, `taille` les trois dimensions en metres. Le decalage de la copie
-	// courante s'ajoute au centre.
 	void Pave(NkRender3D *r3d, NkMeshSystem *meshes, const NkVec3f &centreLocal,
 			  const NkVec3f &taille, const NkVec3f &teinte, float32 rugosite = 1.f) {
 		const NkVec3f centre = { centreLocal.x + gDecalage.x, centreLocal.y + gDecalage.y,
@@ -85,7 +69,7 @@ namespace {
 		const NkVec3f bois = { 0.55f, 0.38f, 0.22f };
 		const NkVec3f vitre = { 0.75f, 0.85f, 0.92f };
 
-		{ // le sol : le plan est unitaire, une echelle S donne un cote S
+		{ 
 			NkDrawCall3D dc;
 			dc.mesh = meshes->GetPlane();
 			dc.transform = NkMat4f::Translate(gDecalage) * NkMat4f::Scale({ kPiece, 1.f, kPiece });
@@ -100,27 +84,22 @@ namespace {
 		const float32 yMur = kPlafond * 0.5f;
 		const float32 bord = kDemi + kMur * 0.5f;
 
-		// Quatre murs. La porte est dans celui du fond, les fenetres a gauche.
 		Pave(r3d, meshes, { 0.f, yMur, -bord }, { kPiece, kPlafond, kMur }, grisMur);
 		Pave(r3d, meshes, { 0.f, yMur, bord }, { kPiece, kPlafond, kMur }, grisMur);
 		Pave(r3d, meshes, { -bord, yMur, 0.f }, { kMur, kPlafond, kPiece }, grisMur);
 		Pave(r3d, meshes, { bord, yMur, 0.f }, { kMur, kPlafond, kPiece }, grisMur);
 
-		// Le plafond.
 		Pave(r3d, meshes, { 0.f, kPlafond + kMur * 0.5f, 0.f },
 			 { kPiece, kMur, kPiece }, grisMur);
 
-		// La porte, fermee : un panneau plaque contre le mur du fond.
 		Pave(r3d, meshes, { -0.70f, kPorteH * 0.5f, -kDemi + 0.02f },
 			 { kPorteL, kPorteH, 0.04f }, bois, 0.6f);
 
-		// Deux fenetres sur le mur de gauche.
 		Pave(r3d, meshes, { -kDemi + 0.02f, kFenY, -0.90f },
 			 { 0.04f, kFenH, kFenL }, vitre, 0.15f);
 		Pave(r3d, meshes, { -kDemi + 0.02f, kFenY, 0.90f },
 			 { 0.04f, kFenH, kFenL }, vitre, 0.15f);
 
-		// La table : un plateau et quatre pieds.
 		const float32 tx = 0.60f, tz = 0.70f;
 		const float32 ep = 0.05f;
 		Pave(r3d, meshes, { tx, kTableH - ep * 0.5f, tz },
@@ -135,17 +114,10 @@ namespace {
 				 { pied, hp, pied }, bois, 0.6f);
 		}
 
-		// Le repere d'un metre : un cube d'un metre de cote, pose au sol.
 		Pave(r3d, meshes, { -1.10f, 0.50f, 1.20f }, { 1.f, 1.f, 1.f },
 			 { 0.85f, 0.80f, 0.30f }, 0.8f);
 	}
 
-	// Attend jusqu'a l'instant cible (ns, horloge de NkChrono).
-	// Sans minuterie fine, SleepMilliseconds(1) dure ~15,5 ms (NkChrono.h, mesure du
-	// 2026-08-15) : on ne s'en sert alors jamais. Avec elle, 1 ms dure ~1,9 ms : on
-	// dort tant qu'il reste plus de 3 ms, puis on attend en boucle active sur
-	// l'horloge, ce qui tient l'instant vise a une fraction de milliseconde, au prix
-	// d'un coeur occupe.
 	void AttendreJusqua(uint64 cibleNs, bool minuterieFine) {
 		for (;;) {
 			const uint64 maintenant = (uint64)NkChrono::Now().nanoseconds;
@@ -163,7 +135,7 @@ namespace {
 		return (uint64)strtoull(t, nullptr, 10);
 	}
 
-} // namespace
+} 
 
 int nkmain(const NkEntryState &state) {
 	(void)state;
@@ -192,9 +164,6 @@ int nkmain(const NkEntryState &state) {
 		return 1;
 	}
 
-	// Deux renderers : le premier POSSEDE l'image (BeginFrame, Present, EndFrame)
-	// et ne dessine que du 2D ; le second dessine la salle dans une cible hors
-	// ecran, que le premier affiche ensuite dans la fenetre.
 	NkRendererConfig cfgEcran =
 		NkRendererConfig::For2D(devInit.api, devInit.width, devInit.height);
 	NkRenderer *rEcran = NkRenderer::Create(device, cfgEcran);
@@ -211,7 +180,7 @@ int nkmain(const NkEntryState &state) {
 	od.hdr = false;
 	od.colorFmt = NkGPUFormat::NK_RGBA8_UNORM;
 	od.readable = true;
-	od.readback = true; // sans quoi Capture() ne peut rien relire
+	od.readback = true; 
 	od.name = "MaSalle_Cible";
 
 	NkOffscreenTarget *cible = rEcran->CreateOffscreen(od);
@@ -229,8 +198,6 @@ int nkmain(const NkEntryState &state) {
 	cfgSalle.Disable(NK_SS_OVERLAY);
 	cfgSalle.Enable(NK_SS_OFFSCREEN);
 
-	// NK_SS_POST_PROCESS porte le tonemap, le bloom, le FXAA et le SSAO.
-	// MASALLE_POST=0 le coupe.
 	if (EnvU64("MASALLE_POST", 1) == 0) {
 		cfgSalle.Disable(NK_SS_POST_PROCESS);
 	}
@@ -248,27 +215,23 @@ int nkmain(const NkEntryState &state) {
 	std::printf("[MaSalle] salle de %.1f m sur %.1f m, plafond a %.2f m\n",
 				(double)kPiece, (double)kPiece, (double)kPlafond);
 
-	// Sortie automatique : MASALLE_EXIT=<image> arrete proprement.
 	const uint64 imageDeSortie = EnvU64("MASALLE_EXIT", 0);
 	const uint64 imageDeCapture = EnvU64("MASALLE_SHOT", 0);
 
-	// -- Exo 9 : parametres de la mesure et du verrou ------------------------
-	// HZ : la frequence de l'ecran, lue dans les parametres d'affichage de Windows
 	const double hzLu = (double)EnvU64("MASALLE_HZ", 72);
 	const double hz = (hzLu > 1.0) ? hzLu : 72.0;
 	const uint64 periodeNs = (uint64)(1e9 / hz);
 	const uint64 copies = EnvU64("MASALLE_COPIES", 1);
 	const bool verrou = (EnvU64("MASALLE_VERROU", 0) != 0);
 
-	// Minuterie fine (NkChrono.h) : demandee une fois, rendue a la fin si c'est nous
 	const bool etaitActive = NkChrono::IsPreciseTimingActive();
 	if (!etaitActive) {
 		NkChrono::BeginPreciseTiming();
 	}
 	const bool minuterieFine = NkChrono::IsPreciseTimingActive();
 
-	const uint64 kEcartes = 30;	  // images de demarrage ecartees
-	const size_t kMesures = 1000; // intervalles gardes
+	const uint64 kEcartes = 30;	 
+	const size_t kMesures = 1000;
 	std::vector<double> intervalles;
 	intervalles.reserve(kMesures);
 	uint64 debutPrecedent = 0;
@@ -277,10 +240,8 @@ int nkmain(const NkEntryState &state) {
 	bool tourne = true;
 
 	while (tourne && fenetre.IsOpen()) {
-		// Debut d'image : l'instant present, avant tout le reste
 		const uint64 debutImage = (uint64)NkChrono::Now().nanoseconds;
 		if (image > kEcartes && intervalles.size() < kMesures) {
-			// l'intervalle entre deux debuts d'image, pas la duree du travail
 			intervalles.push_back((double)(debutImage - debutPrecedent) * 1e-6);
 			if (intervalles.size() >= kMesures) {
 				tourne = false;
@@ -301,7 +262,6 @@ int nkmain(const NkEntryState &state) {
 
 			NkRender3D *r3d = renderer->GetRender3D();
 
-			// Ce que BeginFrame ferait si ce renderer possedait l'image.
 			renderer->FlushGraphRebuilds();
 			r3d->ResetFrame();
 			if (auto *mc = renderer->GetMaterialCollection()) {
@@ -309,7 +269,6 @@ int nkmain(const NkEntryState &state) {
 			}
 
 			NkCamera3DData cd;
-			// A hauteur d'yeux, regardant la porte. Camera fixe.
 			cd.position = { 0.30f, kYeux, 1.20f };
 			cd.target = { -0.70f, 1.10f, -kDemi };
 			cd.up = { 0.f, 1.f, 0.f };
@@ -333,20 +292,16 @@ int nkmain(const NkEntryState &state) {
 
 			r3d->BeginScene(sctx);
 
-			// La salle, soumise `copies` fois, chaque copie decalee de 5 m le long de x
 			for (uint64 k = 0; k < copies; ++k) {
 				gDecalage = { 5.f * (float32)k, 0.f, 0.f };
 				SoumettreLaSalle(r3d, renderer->GetMeshSystem());
 			}
 			gDecalage = { 0.f, 0.f, 0.f };
 
-			// Le graphe de la salle s'execute sur le command buffer de l'ecran,
-			// AVANT son Present : deux passes imbriquees sont interdites.
 			if (auto *graph = renderer->GetRenderGraph()) {
 				graph->Execute(cmd);
 			}
 
-			// La texture, montree dans la fenetre.
 			if (auto *r2d = rEcran->GetRender2D()) {
 				r2d->DrawImage(cible->GetColorResult(),
 							   { 0.f, 0.f, (float32)devInit.width,
@@ -359,12 +314,10 @@ int nkmain(const NkEntryState &state) {
 
 		++image;
 
-		// Le verrou de demi-cadence : fin d'image = debut + DEUX periodes de l'ecran
 		if (verrou) {
 			AttendreJusqua(debutImage + 2 * periodeNs, minuterieFine);
 		}
 
-		// La capture, a une image nommee.
 		if (imageDeCapture != 0 && image == imageDeCapture) {
 			const char *chemin = getenv("MASALLE_SHOT_PATH");
 			if (chemin == nullptr || *chemin == '\0') {
@@ -380,7 +333,6 @@ int nkmain(const NkEntryState &state) {
 		}
 	}
 
-	// -- Exo 9 : les resultats, apres la boucle ------------------------------
 	if (!intervalles.empty()) {
 		double somme = 0.0, maxi = 0.0;
 		for (double v : intervalles) {
