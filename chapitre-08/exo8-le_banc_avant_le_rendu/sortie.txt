@@ -1,0 +1,17 @@
+tour 1 EMPRUNTE 0
+tour 1 REND 0
+tour 2 EMPRUNTE 1
+tour 2 REND 1
+tour 3 EMPRUNTE 2
+tour 3 REND 2
+tour 4 EMPRUNTE 0
+tour 4 REND 0
+tour 5 EMPRUNTE 1
+tour 5 REND 1
+tour 6 EMPRUNTE 2
+tour 6 REND 2
+derniere rendue : 2
+emprunter : ACCEPTE
+emprunter deux fois : REFUSE
+rendre sans avoir emprunte : REFUSE
+creer 5 images : REFUSE
