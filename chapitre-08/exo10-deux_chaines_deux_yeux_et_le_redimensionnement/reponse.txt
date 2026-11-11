@@ -1,0 +1,8 @@
+Ce qui se passe sans recreer :
+Si je redimensionne la fenetre et que je refais seulement les textures, la chaine garde ses anciens identifiants. Ils designent des images detruites : dans mon essai sans-recreer, les 15 images suivant le redimensionnement sont refusees pour chaque oeil (30 erreurs au total), avec des messages "identifiant detruit". Le rendu ne plante pas et rien n'est journalise, seule la soumission est fausse.
+
+Pourquoi reenregistrer ne suffit pas seul :
+Une chaine detruite puis recreee est neuve et son tableau est plein de zeros. Dans mon essai sans-reenregistrer, la soumission envoie l'identifiant zero pour les deux yeux, 30 fois : ecran noir, alors que le rendu est correct. Mais l'inverse est vrai aussi : reenregistrer des images dans une chaine qu'on n'a pas recreee garde l'ancien anneau (position du prochain emprunt, etat d'emprunt) et ne garantit ni le bon nombre d'images ni la bonne taille. Les trois gestes vont ensemble, dans l'ordre : detruire, recreer, reenregistrer.
+
+Ce que les deux yeux doivent partager :
+Aucune chaine. Chaque oeil a la sienne, avec son anneau, son index et ses images : sinon le second ecrit par-dessus le premier et on ne voit qu'une image. Ils partagent seulement la discipline des quatre temps, le nombre d'images, la taille de la fenetre, et le moment de la reconstruction : on refait les deux chaines ensemble, pour qu'aucun oeil ne reste a l'ancienne taille.

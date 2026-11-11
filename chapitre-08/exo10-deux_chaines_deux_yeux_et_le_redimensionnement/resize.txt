@@ -1,0 +1,6 @@
+detruire la chaine gauche (1280x720)
+detruire la chaine droite (1280x720)
+recreer la chaine gauche (2 images, 1600x900)
+recreer la chaine droite (2 images, 1600x900)
+reenregistrer les 2 images de la chaine gauche
+reenregistrer les 2 images de la chaine droite
