@@ -1,0 +1,5 @@
+A quelle image ca s'est fige : sur ma machine, le programme ne s'est jamais figé. Avec une cible de 640 x 360 dans une fenêtre de 1280 x 720 et sans la taille forcée, il a dessiné les 300 images demandées et s'est fermé normalement. La différence observée est ailleurs : la capture de la cible est entièrement noire (5,7 Ko), alors qu'avec les deux appels elle montre la salle (130 Ko).
+
+Ce que la pile montrait : la pile de pile.txt a été prise sur un programme qui tournait encore, pas sur un programme bloqué. Elle montre le fil principal dans nkmain, EndFrame, RecreateSwapchain puis CreateSwapchain, c'est-à-dire en plein travail, et non en attente. Je n'ai donc pas pu observer ce que le fil principal attend lors d'un vrai figement.
+
+Pourquoi rien n'est journalise : l'oubli de la taille forcée ne viole aucune règle de l'interface. Les deux appels sont valides chacun séparément, et le journal ne montre que swap=1280x720, une simple information. Le moteur ne sait pas que la zone dessinée ne correspond pas à l'image visée, donc il n'a rien à signaler : il exécute ce qu'on lui demande, et le résultat est soit un figement, soit une image noire selon le pilote.

@@ -1,0 +1,111 @@
+(lldb) process attach --pid 16392
+Process 16392 stopped
+* thread #35, stop reason = signal SIGTRAP
+      frame #0: 0x00007ff858c910d1 ntdll.dll`DbgBreakPoint + 1
+ntdll.dll`DbgBreakPoint:
+->  0x7ff858c910d1 <+1>: retq   
+    0x7ff858c910d2 <+2>: int3   
+    0x7ff858c910d3 <+3>: int3   
+    0x7ff858c910d4 <+4>: int3
+Executable binary set to "C:\Users\Jr\Cours\Cours-NKRHI-NKRenderer\MaSalle\Build\Bin\Debug-Windows\MaSalle\MaSalle.exe".
+Architecture set to: x86_64-pc-windows-msvc.
+(lldb) thread list
+Process 16392 stopped
+  thread #1: tid = 0x07a8, 0x00007ff8461bd950 igd10iumd64.dll`OpenAdapter10_2 + 45488
+  thread #2: tid = 0x33e0, 0x00007ff858c91034 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+  thread #3: tid = 0x2b44, 0x00007ff858c91034 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+  thread #4: tid = 0x2aa0, 0x00007ff858c91034 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+  thread #5: tid = 0x4868, 0x00007ff858c91034 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+  thread #6: tid = 0x0e60, 0x00007ff858c8e0f4 ntdll.dll`NtWaitForMultipleObjects + 20
+  thread #7: tid = 0x4284, 0x00007ff858c8e0f4 ntdll.dll`NtWaitForMultipleObjects + 20
+  thread #8: tid = 0x2518, 0x00007ff858c8e0f4 ntdll.dll`NtWaitForMultipleObjects + 20
+  thread #9: tid = 0x2f3c, 0x00007ff858c8d624 ntdll.dll`NtWaitForSingleObject + 20
+  thread #10: tid = 0x3e70, 0x00007ff858c8d624 ntdll.dll`NtWaitForSingleObject + 20
+  thread #11: tid = 0x1d3c, 0x00007ff858c8d624 ntdll.dll`NtWaitForSingleObject + 20
+  thread #12: tid = 0x3d80, 0x00007fffe0424d4c nvoglv64.dll`DrvPresentBuffers + 1189420
+  thread #13: tid = 0x0bb8, 0x00007ff858c8d624 ntdll.dll`NtWaitForSingleObject + 20
+  thread #14: tid = 0x46d4, 0x00007ff858c8e0f4 ntdll.dll`NtWaitForMultipleObjects + 20
+  thread #15: tid = 0x3d2c, 0x00007ff858c8d624 ntdll.dll`NtWaitForSingleObject + 20
+  thread #16: tid = 0x0688, 0x00007ff858c8d624 ntdll.dll`NtWaitForSingleObject + 20
+  thread #17: tid = 0x42fc, 0x00007ff858c90fd4 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #18: tid = 0x1b08, 0x00007ff858c90fd4 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #19: tid = 0x2550, 0x00007ff858c8e0f4 ntdll.dll`NtWaitForMultipleObjects + 20
+  thread #20: tid = 0x05e8, 0x00007ff858c90fd4 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #21: tid = 0x3a78, 0x00007ff858c90fd4 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #22: tid = 0x18cc, 0x00007ff858c90fd4 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #23: tid = 0x4270, 0x00007ff858c90fd4 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #24: tid = 0x26c4, 0x00007ff858c90fd4 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #25: tid = 0x3aa0, 0x00007ff858c90fd4 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #26: tid = 0x07d0, 0x00007ff858c90fd4 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #27: tid = 0x3060, 0x00007ff858c90fd4 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #28: tid = 0x3dd8, 0x00007ff858c90fd4 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #29: tid = 0x38d4, 0x00007ff858c90fd4 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #30: tid = 0x4094, 0x00007ff858c90fd4 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #31: tid = 0x0674, 0x00007ff858c90fd4 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #32: tid = 0x3900, 0x00007ff858c8d624 ntdll.dll`NtWaitForSingleObject + 20
+  thread #33: tid = 0x4a8c, 0x00007ff858c91034 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+  thread #34: tid = 0x1f54, 0x00007ff858c91034 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+* thread #35: tid = 0x4b08, 0x00007ff858c910d1 ntdll.dll`DbgBreakPoint + 1, stop reason = signal SIGTRAP
+(lldb) thread select 1
+(lldb) bt
+* thread #1
+      frame #0: 0x00007ff8461bd950 igd10iumd64.dll`OpenAdapter10_2 + 45488
+igd10iumd64.dll`OpenAdapter10_2:
+->  0x7ff8461bd950 <+45488>: movq   %rcx, 0x8(%rsp)
+    0x7ff8461bd955 <+45493>: pushq  %rbx
+    0x7ff8461bd956 <+45494>: pushq  %rbp
+    0x7ff8461bd957 <+45495>: pushq  %rsi
+(lldb) * thread #1
+  * frame #0: 0x00007ff8461bd950 igd10iumd64.dll`OpenAdapter10_2 + 45488
+    frame #1: 0x00007ff8466b3b62 igd10iumd64.dll`OpenAdapter10_2 + 5247938
+    frame #2: 0x00007ff85123785d d3d11.dll`EnableFeatureLevelUpgrade + 1197
+    frame #3: 0x00007ff851232f17 d3d11.dll`
+    frame #4: 0x00007ff851232c2f d3d11.dll`
+    frame #5: 0x00007ff851254632 d3d11.dll`D3D11CoreCreateDevice + 113650
+    frame #6: 0x00007ff851253fe4 d3d11.dll`D3D11CoreCreateDevice + 112036
+    frame #7: 0x00007ff851242e86 d3d11.dll`D3D11CoreCreateDevice + 42054
+    frame #8: 0x00007ff85125d056 d3d11.dll`D3D11CoreCreateDevice + 149014
+    frame #9: 0x00007ff8512360ef d3d11.dll`
+    frame #10: 0x00007ff85125e824 d3d11.dll`D3D11CoreCreateDevice + 155108
+    frame #11: 0x00007ff8512371be d3d11.dll`D3D11CoreCreateLayeredDevice + 302
+    frame #12: 0x00007ff85125826b d3d11.dll`D3D11CoreCreateDevice + 129067
+    frame #13: 0x00007ff851238f4c d3d11.dll`D3D11CoreCreateDevice + 1292
+    frame #14: 0x00007ff851236cae d3d11.dll`D3D11CoreRegisterLayers + 2206
+    frame #15: 0x00007ff85126f94d d3d11.dll`D3D11CreateDeviceAndSwapChain + 237
+    frame #16: 0x00007ff85126f84c d3d11.dll`D3D11CreateDevice + 348
+    frame #17: 0x00007ff85126f7c4 d3d11.dll`D3D11CreateDevice + 212
+    frame #18: 0x00007ff854b79756 dxgi.dll`DXGIGetDebugInterface1 + 115238
+    frame #19: 0x00007ff854b67b10 dxgi.dll`DXGIGetDebugInterface1 + 42464
+    frame #20: 0x00007ff854b3d850 dxgi.dll`PIXBeginCapture + 118944
+    frame #21: 0x00007ff854b3d62e dxgi.dll`PIXBeginCapture + 118398
+    frame #22: 0x00007ff854b1b191 dxgi.dll`CompatString + 63441
+    frame #23: 0x00007ff854b013cb dxgi.dll`
+    frame #24: 0x00007ff854b0156e dxgi.dll`
+    frame #25: 0x00007ff854b01395 dxgi.dll`
+    frame #26: 0x00007ff854b1b63f dxgi.dll`CompatString + 64639
+    frame #27: 0x00007ff854b61069 dxgi.dll`DXGIGetDebugInterface1 + 15161
+    frame #28: 0x00007ff854b60dbb dxgi.dll`DXGIGetDebugInterface1 + 14475
+    frame #29: 0x00007fffe06aa0a3 nvoglv64.dll`vk_gr2608GetInstanceProcAddr + 290211
+    frame #30: 0x00007fffe069c636 nvoglv64.dll`vk_gr2608GetInstanceProcAddr + 234294
+    frame #31: 0x00007fffe06a6540 nvoglv64.dll`vk_gr2608GetInstanceProcAddr + 275008
+    frame #32: 0x00007fffe069ab51 nvoglv64.dll`vk_gr2608GetInstanceProcAddr + 227409
+    frame #33: 0x00007ff80ad1ceac vulkan-1.dll`vkResetEvent + 439324
+    frame #34: 0x00007ff80ad1e9a5 vulkan-1.dll`vkResetEvent + 446229
+    frame #35: 0x00007ff6deb390d6 MaSalle.exe`nkentseu::NkVulkanDevice::CreateSwapchain(this=0x000001beb52e1658, w=1280, h=720) at NkVulkanDevice.cpp:839:3
+    frame #36: 0x00007ff6deb3c2d2 MaSalle.exe`nkentseu::NkVulkanDevice::RecreateSwapchain(this=0x000001beb52e1658, w=1280, h=720) at NkVulkanDevice.cpp:944:3
+    frame #37: 0x00007ff6deb447eb MaSalle.exe`nkentseu::NkVulkanDevice::EndFrame(this=0x000001beb52e1658, (null)=0x000001bef8c144c0) at NkVulkanDevice.cpp:2447:5
+    frame #38: 0x00007ff6de988722 MaSalle.exe`nkentseu::renderer::NkRendererImpl::EndFrame(this=0x000001bef8c142f8) at NkRendererImpl.cpp:1906:13
+    frame #39: 0x00007ff6de962ac4 MaSalle.exe`nkmain(state=0x0000000b79b6fa88) at main.cpp:220:33
+    frame #40: 0x00007ff6de9616e9 MaSalle.exe`WinMain(hInstance=0x00007ff6de960000, hPrevInstance=0x0000000000000000, lpCmdLine="", nCmdShow=10) at NkWindowsDesktop.h:84:15
+    frame #41: 0x00007ff6dea405d8 MaSalle.exe`main(argc=<unavailable>, argv=<unavailable>, envp=<unavailable>) at crtexewin.c:67:10
+    frame #42: 0x00007ff6de961311 MaSalle.exe`__tmainCRTStartup at crtexe.c:267:15
+    frame #43: 0x00007ff6de961366 MaSalle.exe`mainCRTStartup at crtexe.c:188:9
+    frame #44: 0x00007ff856f27374 kernel32.dll`BaseThreadInitThunk + 20
+    frame #45: 0x00007ff858c3cc91 ntdll.dll`RtlUserThreadStart + 33
+(lldb) detach
+lldb-server exiting...
+Connection established.
+lldb-server-local_build
+Attached to process 16392...
+Process 16392 detached
+(lldb) (lldb) quit
