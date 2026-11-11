@@ -1,14 +1,3 @@
-// Deux chaines d'echange, une par oeil, et un redimensionnement de fenetre.
-//
-// Banc de test autonome : pas de fenetre, pas de carte graphique, pas de casque.
-// Une chaine d'echange est de la comptabilite, pas du dessin.
-//
-// Modes (argument en ligne de commande) :
-//   (aucun)              chemin correct : detruire, recreer, reenregistrer
-//   sans-reenregistrer   chaines recreees mais images jamais reenregistrees
-//   sans-recreer         images redimensionnees mais chaines gardees telles quelles
-// Seul le chemin correct ecrit trace.txt et resize.txt.
-
 #include <cstdarg>
 #include <cstdint>
 #include <cstdio>
@@ -18,15 +7,11 @@
 using uint32 = std::uint32_t;
 using uint64 = std::uint64_t;
 
-// ---------------------------------------------------------------------------
-// Faux GPU : une table de textures. Le numero de ligne sert d'identifiant opaque.
-// La ligne 0 reste invalide : l'identifiant zero ne designe jamais rien.
-// ---------------------------------------------------------------------------
 struct Texture {
     uint32 largeur;
     uint32 hauteur;
-    int    oeil;     // 0 = gauche, 1 = droit : qui a le droit d'ecrire dedans
-    uint32 trame;    // numero de l'image dessinee en dernier dedans
+    int    oeil;     
+    uint32 trame;    
     bool   vivante;
 };
 
@@ -45,15 +30,10 @@ static bool TextureValide(uint64 id) {
     return id != 0 && id < gGpu.size() && gGpu[id].vivante;
 }
 
-// ---------------------------------------------------------------------------
-// La chaine d'echange : tableau a taille fixe, identifiants 64 bits sans type,
-// un booleen, deux retours false. Zero allocation.
-// ---------------------------------------------------------------------------
 class Chaine {
 public:
     static constexpr uint32 kMaxImages = 4;
 
-    // Refuse une chaine trop grande (ou vide).
     bool Create(const char* nom, uint32 nombreImages) {
         if (nombreImages == 0 || nombreImages > kMaxImages) { return false; }
         mNom      = nom;
@@ -73,14 +53,12 @@ public:
         for (uint32 i = 0; i < kMaxImages; ++i) { mImages[i] = 0; }
     }
 
-    // L'application fabrique les images, la chaine ne fait que les retenir.
     bool RegisterImage(uint32 index, uint64 id) {
         if (!mCreated || index >= mCount) { return false; }
         mImages[index] = id;
         return true;
     }
 
-    // Temps 1 : emprunter. Refuse le double emprunt.
     bool AcquireImage(uint32& index) {
         if (!mCreated || mAcquired) { return false; }
         index     = mNext;
@@ -88,7 +66,6 @@ public:
         return true;
     }
 
-    // Temps 3 : rendre. Refuse de rendre sans avoir emprunte. Avance sur la suivante.
     bool ReleaseImage() {
         if (!mCreated || !mAcquired) { return false; }
         mAcquired = false;
@@ -96,7 +73,6 @@ public:
         return true;
     }
 
-    // Temps 4 : on soumet la derniere image RELACHEE, pas celle obtenue a l'emprunt.
     uint32 GetLastReleasedIndex() const {
         return (mNext + mCount - 1u) % mCount;
     }
@@ -114,18 +90,15 @@ private:
     bool        mCreated            = false;
 };
 
-// ---------------------------------------------------------------------------
-// L'application
-// ---------------------------------------------------------------------------
 enum Oeil { GAUCHE = 0, DROIT = 1 };
 
 static const char* kNomOeil[2]   = {"gauche", "droit"};
 static const char* kNomChaine[2] = {"oeil gauche", "oeil droit"};
-static const char* kAccord[2]    = {"gauche", "droite"};   // pour "la chaine ..."
+static const char* kAccord[2]    = {"gauche", "droite"};   
 
-static const uint32 kNombreImagesTotal = 30;   // images tracees
-static const uint32 kImageDuResize     = 15;   // le redimensionnement arrive apres cette image
-static const uint32 kImagesParChaine   = 2;    // comme les vrais runtimes : deux ou trois
+static const uint32 kNombreImagesTotal = 30;   
+static const uint32 kImageDuResize     = 15;  
+static const uint32 kImagesParChaine   = 2;   
 
 static uint32 gLargeur = 1280;
 static uint32 gHauteur = 720;
@@ -133,8 +106,6 @@ static int    gErreurs = 0;
 
 static Chaine gChaine[2];
 
-// Cree la chaine d'un oeil et, si demande, ses textures + leur enregistrement.
-// enregistrer = false sert a reproduire l'erreur classique, ou a separer les etapes.
 static bool MonterOeil(int oeil, bool enregistrer) {
     if (!gChaine[oeil].Create(kNomChaine[oeil], kImagesParChaine)) { return false; }
     if (!enregistrer) { return true; }
@@ -144,31 +115,26 @@ static bool MonterOeil(int oeil, bool enregistrer) {
     return true;
 }
 
-// Les quatre temps pour un oeil. Rend l'index emprunte (pour la trace).
 static bool UneImagePourUnOeil(int oeil, uint32 image, uint32& indexEmprunte) {
     Chaine& c = gChaine[oeil];
 
-    // Temps 1 : emprunter
     if (!c.AcquireImage(indexEmprunte)) {
         std::fprintf(stderr, "erreur : double emprunt sur la chaine %s\n", c.GetName());
         ++gErreurs;
         return false;
     }
 
-    // Temps 2 : dessiner, dans l'image empruntee et nulle part ailleurs
     const uint64 cible = c.GetImage(indexEmprunte);
     if (TextureValide(cible)) {
-        gGpu[cible].trame = image;   // le "dessin" : on y ecrit le numero de l'image
-    }                                // sinon : silence, comme un vrai rendu hors ecran
+        gGpu[cible].trame = image;  
+    }                              
 
-    // Temps 3 : rendre
     if (!c.ReleaseImage()) {
         std::fprintf(stderr, "erreur : rendu sans emprunt sur la chaine %s\n", c.GetName());
         ++gErreurs;
         return false;
     }
 
-    // Temps 4 : soumettre la derniere image relachee
     const uint32 aSoumettre = c.GetLastReleasedIndex();
     const uint64 id         = c.GetImage(aSoumettre);
 
@@ -197,7 +163,6 @@ static bool UneImagePourUnOeil(int oeil, uint32 image, uint32& indexEmprunte) {
     return true;
 }
 
-// Ecrit une ligne dans resize.txt (si le fichier est ouvert) et a l'ecran.
 static void Journal(std::FILE* f, const char* format, ...) {
     char ligne[256];
     va_list args;
@@ -216,18 +181,15 @@ static void Redimensionner(uint32 nouvelleLargeur, uint32 nouvelleHauteur,
     gHauteur = nouvelleHauteur;
 
     if (!recreer) {
-        // Mauvais chemin : on refait les textures a la nouvelle taille,
-        // mais les chaines gardent leurs anciens identifiants.
         for (int oeil = 0; oeil < 2; ++oeil) {
             for (uint32 i = 0; i < kImagesParChaine; ++i) {
                 DetruireTexture(gChaine[oeil].GetImage(i));
-                CreerTexture(gLargeur, gHauteur, oeil);   // jamais communique a la chaine
+                CreerTexture(gLargeur, gHauteur, oeil);   
             }
         }
         return;
     }
 
-    // 1) detruire les deux chaines (et leurs anciennes images)
     for (int oeil = 0; oeil < 2; ++oeil) {
         for (uint32 i = 0; i < kImagesParChaine; ++i) {
             DetruireTexture(gChaine[oeil].GetImage(i));
@@ -237,14 +199,12 @@ static void Redimensionner(uint32 nouvelleLargeur, uint32 nouvelleHauteur,
                 ancienneLargeur, ancienneHauteur);
     }
 
-    // 2) recreer les deux chaines
     for (int oeil = 0; oeil < 2; ++oeil) {
-        MonterOeil(oeil, false);   // chaine neuve : tableau plein de zeros
+        MonterOeil(oeil, false);  
         Journal(resize, "recreer la chaine %s (%u images, %ux%u)", kAccord[oeil],
                 kImagesParChaine, gLargeur, gHauteur);
     }
 
-    // 3) reenregistrer les images
     if (reenregistrer) {
         for (int oeil = 0; oeil < 2; ++oeil) {
             for (uint32 i = 0; i < kImagesParChaine; ++i) {
@@ -270,7 +230,6 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // Deux chaines independantes, nommees : le nom sert aux outils de mise au point.
     for (int oeil = 0; oeil < 2; ++oeil) {
         if (!MonterOeil(oeil, true)) {
             std::fprintf(stderr, "creation de la chaine %s refusee\n", kNomOeil[oeil]);
