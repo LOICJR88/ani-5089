@@ -3,16 +3,14 @@
 #include <string>
 #include <vector>
 
-// ---------- Les trois champs d'une action (comme au chapitre 12) ----------
 struct EtatBool {
-    bool current = false;   // vrai tant que la saisie est maintenue
-    bool changed = false;   // a basculé depuis la synchronisation précédente
-    bool active  = false;   // une source matérielle est liée
+    bool current = false;   
+    bool changed = false;   
+    bool active  = false;   
 };
 
 struct Vec2 { float x; float y; };
 
-// ---------- Mini dessin en mémoire ----------
 static const int LARGEUR = 320;
 static const int HAUTEUR = 240;
 static std::vector<uint8_t> image(LARGEUR * HAUTEUR * 3, 255);
@@ -27,7 +25,6 @@ static void Rect(int x0, int y0, int w, int h, uint8_t r, uint8_t g, uint8_t b) 
     }
 }
 
-// ---------- Écriture d'un PNG sans bibliothèque (blocs deflate "stockés") ----------
 static void Put32(std::vector<uint8_t>& v, uint32_t x) {
     v.push_back(static_cast<uint8_t>(x >> 24));
     v.push_back(static_cast<uint8_t>(x >> 16));
@@ -55,7 +52,7 @@ static void Chunk(std::vector<uint8_t>& out, const char* type, const std::vector
 static bool EcrirePng(const std::string& nom) {
     std::vector<uint8_t> brut;
     for (int y = 0; y < HAUTEUR; ++y) {
-        brut.push_back(0);   // filtre : aucun
+        brut.push_back(0);  
         const size_t debut = static_cast<size_t>(y) * LARGEUR * 3;
         brut.insert(brut.end(), image.begin() + debut, image.begin() + debut + LARGEUR * 3);
     }
@@ -80,8 +77,8 @@ static bool EcrirePng(const std::string& nom) {
     std::vector<uint8_t> ihdr;
     Put32(ihdr, LARGEUR);
     Put32(ihdr, HAUTEUR);
-    ihdr.push_back(8);   // 8 bits par canal
-    ihdr.push_back(2);   // RGB
+    ihdr.push_back(8);  
+    ihdr.push_back(2);  
     ihdr.push_back(0); ihdr.push_back(0); ihdr.push_back(0);
 
     std::vector<uint8_t> png = {0x89, 'P', 'N', 'G', 0x0D, 0x0A, 0x1A, 0x0A};
@@ -96,58 +93,49 @@ static bool EcrirePng(const std::string& nom) {
     return true;
 }
 
-// ---------- La scène : une main qui avance, un cube qu'on saisit ----------
 int main(int argc, char** argv) {
     const std::string sortie = (argc > 1) ? argv[1] : "capture.png";
 
-    const int IMAGE_CAPTURE = 7;      // même instant du geste pour les deux captures
-    const float SOL = 188.f;          // hauteur du centre du cube posé au sol
+    const int IMAGE_CAPTURE = 7;      
+    const float SOL = 188.f;          
 
     EtatBool saisir;
-    saisir.active = true;             // la saisie est liée à une source
+    saisir.active = true;            
 
-    Vec2 cube = {70.f, 125.f};        // le cube attend à côté de la main
-    Vec2 attache = {0.f, 0.f};        // pose du cube dans le repère de la main, figée à la saisie
+    Vec2 cube = {70.f, 125.f};      
+    Vec2 attache = {0.f, 0.f};       
     float vitesseChute = 0.f;
     bool dejaSaisi = false;
 
     for (int image_n = 0; image_n <= IMAGE_CAPTURE; ++image_n) {
-        // La main (paume) avance vers la droite à vitesse constante.
         const Vec2 paume = {40.f + 15.f * image_n, 110.f};
 
-        // Le joueur appuie de l'image 2 à l'image 9.
         const bool appui = (image_n >= 2 && image_n <= 9);
         saisir.changed = (appui != saisir.current);
         saisir.current = appui;
 
-        // À la saisie, une fois : on fige la pose du cube dans le repère de la main
-        // (équivalent de attache = posePaume.Inverted() * pose de l'objet).
         if (saisir.current && saisir.changed) {
             attache = {cube.x - paume.x, cube.y - paume.y};
         }
 
-        // VERSION FAUTIVE (front seulement) : l'objet n'est tenu qu'à l'image de l'appui,
-        // puis il échappe à la main.
         //const bool tenu = saisir.current && saisir.changed;
-
-        // VERSION JUSTE (niveau) : l'objet est tenu tant que la saisie est vraie.
         const bool tenu = saisir.active && saisir.current;
 
         if (tenu) {
-            cube = {paume.x + attache.x, paume.y + attache.y};   // posePaume * attache
+            cube = {paume.x + attache.x, paume.y + attache.y}; 
             vitesseChute = 0.f;
             dejaSaisi = true;
         } else if (dejaSaisi) {
-            vitesseChute += 6.f;                                  // l'objet tombe
+            vitesseChute += 6.f;                                 
             cube.y += vitesseChute;
             if (cube.y > SOL) { cube.y = SOL; vitesseChute = 0.f; }
         }
 
         if (image_n == IMAGE_CAPTURE) {
-            Rect(0, 200, LARGEUR, 4, 90, 90, 90);                                        // sol
-            Rect(static_cast<int>(paume.x) - 20, static_cast<int>(paume.y) - 6, 40, 12, 40, 90, 200);   // main
-            Rect(static_cast<int>(cube.x) - 12, static_cast<int>(cube.y) - 12, 24, 24, 230, 120, 30);   // cube
-            Rect(10, 10, 20, 20, tenu ? 60 : 200, tenu ? 180 : 60, 60);                // vert = tenu, rouge = lâché
+            Rect(0, 200, LARGEUR, 4, 90, 90, 90);                                   
+            Rect(static_cast<int>(paume.x) - 20, static_cast<int>(paume.y) - 6, 40, 12, 40, 90, 200);   
+            Rect(static_cast<int>(cube.x) - 12, static_cast<int>(cube.y) - 12, 24, 24, 230, 120, 30);   
+            Rect(10, 10, 20, 20, tenu ? 60 : 200, tenu ? 180 : 60, 60);               
         }
     }
 
