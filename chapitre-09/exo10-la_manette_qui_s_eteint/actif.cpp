@@ -3,16 +3,14 @@
 #include <string>
 #include <vector>
 
-// ---------- Les trois champs d'une action ----------
 struct EtatBool {
-    bool current = false;   // valeur de l'action à cette image
-    bool changed = false;   // a basculé depuis l'image précédente
-    bool active  = false;   // une source matérielle est liée (manette allumée)
+    bool current = false;   
+    bool changed = false;   
+    bool active  = false;  
 };
 
 struct Vec2 { float x; float y; };
 
-// ---------- Mini dessin en mémoire ----------
 static const int LARGEUR = 320;
 static const int HAUTEUR = 240;
 static std::vector<uint8_t> image(LARGEUR * HAUTEUR * 3, 255);
@@ -27,7 +25,6 @@ static void Rect(int x0, int y0, int w, int h, uint8_t r, uint8_t g, uint8_t b) 
     }
 }
 
-// ---------- Écriture d'un PNG sans bibliothèque ----------
 static void Put32(std::vector<uint8_t>& v, uint32_t x) {
     v.push_back(static_cast<uint8_t>(x >> 24));
     v.push_back(static_cast<uint8_t>(x >> 16));
@@ -96,7 +93,6 @@ static bool EcrirePng(const std::string& nom) {
     return true;
 }
 
-// ---------- Usage : actif.exe avant avant.png   |   actif.exe apres apres.png ----------
 int main(int argc, char** argv) {
     if (argc < 3) {
         std::fprintf(stderr, "usage : actif.exe avant|apres fichier.png\n");
@@ -107,7 +103,7 @@ int main(int argc, char** argv) {
     const bool corrige = (mode == "apres");
 
     const int NB_IMAGES = 20;
-    const int IMAGE_CAPTURE = 10;     // en pleine extinction, même instant pour les deux captures
+    const int IMAGE_CAPTURE = 10;    
     const float SOL = 188.f;
 
     FILE* journal = std::fopen("journal.txt", "w");
@@ -118,7 +114,7 @@ int main(int argc, char** argv) {
 
     EtatBool saisir;
     Vec2 cube = {60.f, 125.f};
-    Vec2 attache = {0.f, 0.f};        // pose du cube dans le repère de la main, figée à la saisie
+    Vec2 attache = {0.f, 0.f};      
     float vitesseChute = 0.f;
     bool tient = false;
     bool dejaSaisi = false;
@@ -126,40 +122,33 @@ int main(int argc, char** argv) {
     for (int n = 1; n <= NB_IMAGES; ++n) {
         const Vec2 paume = {40.f + 8.f * n, 110.f};
 
-        // Le joueur garde le doigt sur la saisie des images 2 à 19.
         const bool appui = (n >= 2 && n <= 19);
 
-        // La manette s'éteint dix images, de l'image 6 à l'image 15, puis se rallume.
         const bool manetteAllumee = !(n >= 6 && n <= 15);
 
-        // Ce que rend le système : une action inactive rend toujours courant faux.
         const bool nouveau = manetteAllumee ? appui : false;
         saisir.active  = manetteAllumee;
-        saisir.changed = (nouveau != saisir.current);   // calculé sur courant, pas sur la touche
+        saisir.changed = (nouveau != saisir.current);   
         saisir.current = nouveau;
 
-        // Saisie : sur le front, une seule fois, on fige la pose du cube dans le repère de la main.
         if (saisir.current && saisir.changed && !tient) {
             attache = {cube.x - paume.x, cube.y - paume.y};
             tient = true;
             dejaSaisi = true;
         }
 
-        // Lâcher.
         if (corrige) {
-            // VERSION JUSTE : on ne lâche que si la manette est active ET que c'est un vrai front de relâchement.
             if (saisir.active && !saisir.current && saisir.changed) {
                 tient = false;
             }
         } else {
-            // VERSION FAUTIVE : on lâche dès que courant est faux, sans tester actif.
             if (!saisir.current) {
                 tient = false;
             }
         }
 
         if (tient) {
-            cube = {paume.x + attache.x, paume.y + attache.y};   // posePaume * attache
+            cube = {paume.x + attache.x, paume.y + attache.y};   
             vitesseChute = 0.f;
         } else if (dejaSaisi) {
             vitesseChute += 6.f;
@@ -171,12 +160,12 @@ int main(int argc, char** argv) {
                      n, saisir.current ? 1 : 0, saisir.changed ? 1 : 0, saisir.active ? 1 : 0);
 
         if (n == IMAGE_CAPTURE) {
-            Rect(0, 200, LARGEUR, 4, 90, 90, 90);                                                         // sol
-            Rect(static_cast<int>(paume.x) - 20, static_cast<int>(paume.y) - 6, 40, 12, 40, 90, 200);    // main
-            Rect(static_cast<int>(cube.x) - 12, static_cast<int>(cube.y) - 12, 24, 24, 230, 120, 30);    // cube
-            Rect(10, 10, 20, 20, tient ? 60 : 200, tient ? 180 : 60, 60);                                // vert = tenu, rouge = tombé
+            Rect(0, 200, LARGEUR, 4, 90, 90, 90);                                                     
+            Rect(static_cast<int>(paume.x) - 20, static_cast<int>(paume.y) - 6, 40, 12, 40, 90, 200); 
+            Rect(static_cast<int>(cube.x) - 12, static_cast<int>(cube.y) - 12, 24, 24, 230, 120, 30);   
+            Rect(10, 10, 20, 20, tient ? 60 : 200, tient ? 180 : 60, 60);                              
             if (!saisir.active) {
-                Rect(40, 10, 20, 20, 30, 30, 30);                                                         // noir = manette éteinte
+                Rect(40, 10, 20, 20, 30, 30, 30);                                                      
             }
         }
     }
