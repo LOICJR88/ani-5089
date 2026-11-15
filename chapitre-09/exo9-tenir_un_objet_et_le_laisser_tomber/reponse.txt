@@ -1,0 +1,5 @@
+Ce qui se passe sur le front : l'objet n'est attaché qu'à l'image où l'appui commence, parce que courant et changed ne sont vrais ensemble que ce jour-là. À l'image suivante changed retombe à 0, l'objet n'est plus attaché et il tombe. Sur front.png, à l'image 7, le cube est déjà au sol, loin de la main. Le front sert à déclencher un événement (tirer une balle), pas à tenir.
+
+Ce qui se passe sur le niveau : l'objet reste attaché à la pose de paume tant que la saisie est vraie, image après image. La pose du cube dans le repère de la main est calculée une seule fois, au moment de la saisie, puis recomposée avec la paume à chaque image. Sur niveau.png, au même instant (image 7), le cube est resté à la même place par rapport à la main, qui a avancé. Le niveau sert à tenir.
+
+Ce que je teste pour lacher : je teste le niveau qui retombe, c'est-à-dire !current && changed, le front de relâchement. Je ne lâche pas sur current seul, car current vaut aussi faux quand la manette s'éteint, qu'un menu s'ouvre ou que l'application perd le focus : c'est pourquoi je teste aussi active avant de conclure que le joueur a relâché.
