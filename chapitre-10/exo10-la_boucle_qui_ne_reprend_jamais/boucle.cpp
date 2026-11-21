@@ -250,7 +250,6 @@ int main() {
         if (shouldRender) {
             couche.lacet = kVitesse * trame;  
 #ifdef FAUTIVE
-            // VERSION FAUTIVE : la fin de trame est DANS le test de rendu.
             session.EndFrame(&couche);
             fin = 1;
 #endif
