@@ -189,16 +189,12 @@ int main() {
 
         Couche couche{};
 
-        // --- VERSION JUSTE (active) : on resoumet les vues du rendu, telles quelles ---
           couche.lacetSoumis = vuesRendu.lacet;
           nomFichier = "rendu.png";
 
-        // --- VERSION FAUTIVE (en commentaire) : on redemande les vues pour l'instant courant ---
         //couche.lacetSoumis = PoseTete(tSoumission).lacet;
         //nomFichier = "fraiche.png";
 
-        // Le compositeur corrige de (reel - soumis) : l'image parait vue depuis
-        // rendu + (reel - soumis), alors que la tete est en realite a "reel".
         const double correction = poseReelle.lacet - couche.lacetSoumis;
         const double lacetEffectif = vuesRendu.lacet + correction;
         const double erreurRestante = vuesRendu.lacet - couche.lacetSoumis;
