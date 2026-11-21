@@ -1,0 +1,5 @@
+Ce que la couche dit vraiment : La couche de projection ne dit pas où est la tête. Elle dit d'où l'image a été vue : la pose utilisée au moment où on a dessiné, ici un lacet de 5,0 degrés. C'est une information sur le passé de l'image, pas sur le présent de la tête.
+
+Ce que le compositeur en fait : Au moment d'afficher, le compositeur connaît la vraie pose de la tête (12,2 degrés). Il compare cette pose à celle que la couche annonce, et décale l'image de la différence : sa correction vaut la pose réelle moins la pose soumise, soit 7,2 degrés avec la pose du rendu. L'image paraît alors vue depuis la vraie pose et le pilier tombe entre les repères.
+
+Pourquoi la pose fraiche ne corrige rien : Si on soumet la pose fraîche (12,2 degrés) au lieu de la pose du rendu (5,0), on dit au compositeur que l'image a été dessinée depuis là, alors qu'elle l'a été depuis 5,0. Il calcule une correction de 0,0 et ne décale rien : il reste une erreur de 7,2 degrés, soit environ 40 pixels, visible sur fraiche.png. La pose fraîche est plus vraie pour dire où est la tête, mais elle est fausse pour dire d'où l'image a été vue.
